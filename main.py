@@ -11,7 +11,7 @@ def send_message (message):
     return response
 
 
-def BtcPrice ():
+def BTCPrice ():
     url = requests.get('https://awebanalysis.com/es/coin-details/bitcoin/')
     soup = BeautifulSoup(url.content, 'html.parser')
     result = soup.find('td', {'class': 'wbreak_word align-middle coin_price'})
@@ -20,7 +20,7 @@ def BtcPrice ():
     return format_result
 
 
-def BtcFearAndGreedIndex ():
+def BTCFearAndGreedIndex ():
     url = requests.get('https://alternative.me/crypto/fear-and-greed-index/')
     soup = BeautifulSoup(url.content, 'html.parser')
     result = soup.find('div', {'class': 'fng-circle'})
@@ -30,7 +30,7 @@ def BtcFearAndGreedIndex ():
 
 
 mensaje = "Buenos días, este es el resumen del día.\n" \
-          "El precio del Bitcoin a dia de hoy es de : " + BtcPrice() + '\n' \
-          "El valor de Fear and Greed Index es de: " + BtcFearAndGreedIndex()
+          "El precio del Bitcoin a dia de hoy es de : " + BTCPrice() + '\n' \
+          "El valor de Fear and Greed Index es de: " + BTCFearAndGreedIndex()
 
 test_bot = send_message(mensaje)
