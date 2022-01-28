@@ -5,7 +5,7 @@ import json
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
 TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM"
-lista_DMI = []
+
 
 def get_klines(n):
     # GET a https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m
@@ -35,14 +35,13 @@ def getDMI(objetivo):
         # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera sencilla
         values = json.dumps(values)
         values = json.loads(values)
-        print(values)
         lista_dmis = []
+
         for v in values:
             if objetivo == 0:
-                lista_dmis.append(v["minusdi"])
+                lista_dmis.append(float(v["minusdi"]))
             else:
-                lista_dmis.append(v["minusdi"])
-
+                lista_dmis.append(float(v["plusdi"]))
         return (True, lista_dmis)
 
 
@@ -109,7 +108,7 @@ def compararMedias():
     if ma50[0] == False:
         return -1
 
-    sleep(20)
+    sleep(15)
 
     ma200 = getMA200()
     if ma200[0] == False:
@@ -131,7 +130,6 @@ def compararMedias():
 def calc_take_profit(SL, open_price):
     # open_price = get_klines(1)[1][1]
     porcentaje_TP = (((SL * 100) / open_price) - 100) / 2
-    print(porcentaje_TP)
     take_profit = ((100 - porcentaje_TP) / 100) * open_price
     return take_profit
 
@@ -172,6 +170,7 @@ print(calc_stop_loss_sells(list_lows))"""
 operamos = False
 medias_comprobadas = False
 saved_adx = False
+pruebas = False
 
 while True:
     minutos = datetime.datetime.now().minute
@@ -185,47 +184,46 @@ while True:
             objetivo = compararMedias()
             medias_comprobadas = True
 
-
+    sleep(15)
 
     if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58):
         if not saved_adx:
             lista_DMI = getDMI(objetivo)[1]
             saved_adx = True
-        if lista_DMI[0] > 25 and lista_DMI[1] < 25 and objetivo != -1:
+        if lista_DMI[0] > 25.00 and lista_DMI[1] < 25.00 and objetivo != -1:
                 operamos = True
         else:
             print("No hay oportunidad")
             print(lista_DMI)
 
 
-
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos:
             last_klines = get_klines(15)
-            open_price = last_klines[1][14][1]
+            open_price = float(last_klines[1][14][1])
             lows = []
             for kline in last_klines[1]:
                 lows.append(kline[3])
             if objetivo == 1:
                 # Estamos en compras
-                stop_loss = calc_stop_loss_buys(lows)
+                stop_loss = float(calc_stop_loss_buys(lows))
 
             else:
                 # Estamos en ventas
-                stop_loss = calc_stop_loss_sells(lows)
+                stop_loss = float(calc_stop_loss_sells(lows))
 
             take_profit = calc_take_profit(stop_loss, open_price)
 
             message = "Empezamos operación con fecha: " + str(datetime.datetime.now()) + '\n' + \
                       "Precio de apertura de la operación: " + str(open_price) + '\n' +\
                       "STOP LOSS: " + str(stop_loss) + '\n' +\
-                      "TAKE PROFIT: " + str(take_profit)
+                      "TAKE PROFIT: " + str(round(take_profit))
 
             print(message)
             TelegramBot.send_message(message)
         saved_adx = False
         medias_comprobadas = False
-
+        pruebas = False
 
 """if objetivo == -1:
         print("Error al realizar las peticiones.")
