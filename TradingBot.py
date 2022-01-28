@@ -25,7 +25,7 @@ def get_klines(n):
 def getDMI(objetivo):
     # Peticion GET al endpoint de la API que devuelve los valores de los indicadores.
     # Seria muy interesante obtener el ADX y el resto de valores de Binance Futuros USDM. https://api.taapi.io/dmi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM&exchange=binanceusdm&symbol=BTC/USDT&interval=15m
-    r = requests.get('https://api.taapi.io/dmi?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&backtracks=1')
+    r = requests.get('https://api.taapi.io/dmi?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&backtracks=2')
     values = r.json()
 
     # Compruebo si existe algun problema al realizar la peticion.
@@ -35,12 +35,13 @@ def getDMI(objetivo):
         # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera sencilla
         values = json.dumps(values)
         values = json.loads(values)
+        print(values)
         lista_dmis = []
         for v in values:
             if objetivo == 0:
-                lista_dmis.append(values["minusdi"])
+                lista_dmis.append(v["minusdi"])
             else:
-                lista_dmis.append(values["minusdi"])
+                lista_dmis.append(v["minusdi"])
 
         return (True, lista_dmis)
 
@@ -190,7 +191,7 @@ while True:
         if not saved_adx:
             lista_DMI = getDMI(objetivo)[1]
             saved_adx = True
-        if lista_DMI[0] < 25 and lista_DMI[1] > 25 and objetivo != -1:
+        if lista_DMI[0] > 25 and lista_DMI[1] < 25 and objetivo != -1:
                 operamos = True
         else:
             print("No hay oportunidad")
