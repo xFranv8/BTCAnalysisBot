@@ -1,6 +1,6 @@
 from time import sleep
 
-import requests, datetime
+import requests, datetime, TelegramBot
 import json
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
@@ -205,11 +205,13 @@ while True:
                 stop_loss = calc_stop_loss_sells(lows, open_price)
                 take_profit = calc_take_profit(stop_loss)
 
-            print("ESTAMOS OPERANDO")
-            print("OPEN PRICE: ", open_price)
-            print("STOP LOSS: ", stop_loss)
-            print("TAKE PROFIT", take_profit)
-            print(datetime.datetime.now())
+            message = "Empezamos operación con fecha: " + str(datetime.datetime.now()) + '\n' + \
+                      "Precio de apertura de la operación: " + str(open_price) + '\n' +\
+                      "STOP LOSS: " + str(stop_loss) + '\n' +\
+                      "TAKE PROFIT: " + str(take_profit)
+
+            print(message)
+            TelegramBot.send_message(message)
 
 
 """if objetivo == -1:
