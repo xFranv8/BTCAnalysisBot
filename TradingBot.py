@@ -97,6 +97,7 @@ def calc_stop_loss_buys(prices):
 
     return picos[len(picos) - 1]
 
+
 def compararMedias():
     ma50 = getMA50()
 
@@ -122,10 +123,22 @@ def compararMedias():
         # Si las medias son iguales devuelvo un -1 porque no operamos.
         return -1
 
+
+def calc_take_profit(SL, open_price):
+    # open_price = get_klines(1)[1][1]
+    porcentaje_TP = (((SL * 100) / open_price) - 100) / 2
+    print(porcentaje_TP)
+    take_profit = ((100 - porcentaje_TP) / 100) * open_price
+    return take_profit
+
+
+
 """
 # Pruebas con valores aleatorios
 print(calc_stop_loss_sells([10, 15, 12, 23, 24, 20]))
-print(calc_stop_loss_buys([25, 20, 15, 10, 16, 11, 9, 14, 20, 21, 16, 19]))"""
+print(calc_stop_loss_buys([25, 20, 15, 10, 16, 11, 9, 14, 20, 21, 16, 19]))
+"""
+
 """# Prueba obtener ADX.
 DMI = getDMI()
 if DMI[0]:
@@ -154,30 +167,52 @@ print(calc_stop_loss_sells(list_lows))"""
 
 while True:
     minutos = datetime.datetime.now().minute
+    operamos = False
+
 
     # Comprobamos la posicion de las dos medias a las horas correspondientes.
-    if (minutos == 12) or (minutos == 27) or (minutos == 42) or (minutos == 57) or (minutos!=0):
+    if (minutos == 12) or (minutos == 27) or (minutos == 42) or (minutos == 57):
         # -1 Medias Iguales, no hacemos nada
         # 0 Buscamos ventas
         # 1 Buscamos compras.
         objetivo = compararMedias()
 
-    sleep(20)
 
-    if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58) or (minutos!=0):
+    if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58):
         lista_DMI.append(getDMI(objetivo)[1])
 
         if len(lista_DMI) == 2:
-            if lista_DMI[0] < 25 and lista_DMI[1] > 25:
-                print("Oportunidad: " + str(objetivo))
+            if lista_DMI[0] < 25 and lista_DMI[1] > 25 and objetivo != -1:
+                   operamos = True
             else:
                 print("No hay oportunidad")
             lista_DMI.pop(0)
 
 
-    sleep(20)
+    if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
+        if operamos:
+            last_klines = get_klines(15)
+            open_price = last_klines[1][14][1]
+            lows = []
+            for kline in last_klines[1]:
+                lows.append(kline[3])
+            if objetivo == 1:
+                # Estamos en compras
+                stop_loss = calc_stop_loss_buys(lows, open_price)
+                take_profit = calc_take_profit(stop_loss)
+            else:
+                # Estamos en ventas
+                stop_loss = calc_stop_loss_sells(lows, open_price)
+                take_profit = calc_take_profit(stop_loss)
 
-    """if objetivo == -1:
+            print("ESTAMOS OPERANDO")
+            print("OPEN PRICE: ", open_price)
+            print("STOP LOSS: ", stop_loss)
+            print("TAKE PROFIT", take_profit)
+            print(datetime.datetime.now())
+
+
+"""if objetivo == -1:
         print("Error al realizar las peticiones.")
     elif objetivo == 0:
         print("Buscamos ventas")
