@@ -208,12 +208,13 @@ while True:
                 lows.append(kline[3])
             if objetivo == 1:
                 # Estamos en compras
-                stop_loss = calc_stop_loss_buys(lows, open_price)
-                take_profit = calc_take_profit(stop_loss)
+                stop_loss = calc_stop_loss_buys(lows)
+
             else:
                 # Estamos en ventas
-                stop_loss = calc_stop_loss_sells(lows, open_price)
-                take_profit = calc_take_profit(stop_loss)
+                stop_loss = calc_stop_loss_sells(lows)
+
+            take_profit = calc_take_profit(stop_loss, open_price)
 
             message = "Empezamos operación con fecha: " + str(datetime.datetime.now()) + '\n' + \
                       "Precio de apertura de la operación: " + str(open_price) + '\n' +\
