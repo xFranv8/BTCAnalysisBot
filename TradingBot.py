@@ -207,7 +207,6 @@ while True:
             if objetivo == 1:
                 # Estamos en compras
                 stop_loss = float(calc_stop_loss_buys(lows))
-
             else:
                 # Estamos en ventas
                 stop_loss = float(calc_stop_loss_sells(lows))
