@@ -134,7 +134,7 @@ def calc_take_profit(SL, open_price):
     take_profit = ((100 - porcentaje_TP) / 100) * open_price
     return take_profit
 
-def resultado(stop_loss, take_profit, open_price, objetivo):
+def resultado(stop_loss, take_profit, open_price, objetivo, acumulado):
     # Calculo los % para mostrarlos luego segun el open price, el stop_loss y el take_profit
     porcentaje_SL = 100 - ((stop_loss * 100)/open_price)
     porcentaje_TP = ((take_profit * 100)/open_price) - 100
@@ -143,6 +143,7 @@ def resultado(stop_loss, take_profit, open_price, objetivo):
     exito = False
 
     while not exito:
+        sleep(60)
         # Obtengo la ultima vela que se ha formado constantemente hasta que el High o el Low superen al SL o al TP.
         last_line = get_klines(1)
 
@@ -151,11 +152,13 @@ def resultado(stop_loss, take_profit, open_price, objetivo):
             # En este caso el High es superior o igual al TP, por lo que habriamos ganado.
             if (last_line[1][0][2] >= take_profit):
                 message = "Operacion ganada!!!\n" + "% Realizado: " + str(porcentaje_TP)
+                acumulado[0] = acumulado[0] + float(porcentaje_TP)
                 TelegramBot.send_message(message)
                 exito = True
             # En este caso el Low es inferior o igual al SL por lo que hubieramos perdido.
             elif (last_line[1][0][3] <= stop_loss):
                 message = "Operacion perdida!!!\n" + "% Realizado: " + str(porcentaje_SL)
+                acumulado[0] = acumulado[0] - float(porcentaje_SL)
                 TelegramBot.send_message(message)
                 exito = True
         # Si estamos aqui es porque objetivo es igual a 0 lo que significa que estamos en ventas y es al reves.
@@ -163,13 +166,17 @@ def resultado(stop_loss, take_profit, open_price, objetivo):
             # En este caso el Low es inferior o igual al TP profit por lo que hubieramos ganado.
             if (last_line[1][0][3] <= take_profit):
                 message = "Operacion ganada!!!\n" + "% Realizado: " + str(porcentaje_TP)
+                acumulado[0] = acumulado[0] + float(porcentaje_TP)
                 TelegramBot.send_message(message)
                 exito = True
             # En este caso el High es superior o igual al SL por lo que hubieramos perdido
             elif (last_line[1][0][2] >= stop_loss):
                 message = "Operacion perdida!!!\n" + "% Realizado: " + str(porcentaje_SL)
+                acumulado[0] = acumulado[0] - float(porcentaje_SL)
                 TelegramBot.send_message(message)
                 exito = True
+    message = "% Acumulado: " + str(acumulado[0])
+    TelegramBot.send_message(message)
 
 """
 # Pruebas con valores aleatorios
@@ -207,6 +214,7 @@ operamos = False
 medias_comprobadas = False
 saved_adx = False
 pruebas = False
+acumulado = [0]
 
 while True:
     minutos = datetime.datetime.now().minute
@@ -220,8 +228,6 @@ while True:
             objetivo = compararMedias()
             medias_comprobadas = True
 
-    sleep(15)
-
     if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58):
         if not saved_adx:
             lista_DMI = getDMI(objetivo)[1]
@@ -231,7 +237,6 @@ while True:
         else:
             print("No hay oportunidad")
             print(lista_DMI)
-
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos:
@@ -255,9 +260,10 @@ while True:
                       "TAKE PROFIT: " + str(round(take_profit))
             print(message)
             TelegramBot.send_message(message)
+            operamos = False
 
             # Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
-            resultado_operacion = threading.Thread(target=resultado, args=(stop_loss, take_profit, open_price, objetivo))
+            resultado_operacion = threading.Thread(target=resultado, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
 
         saved_adx = False
