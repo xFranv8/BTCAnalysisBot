@@ -1,8 +1,8 @@
 from time import sleep
-
 import requests, datetime, TelegramBot
 import json
 import threading
+
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
 TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM"
@@ -178,6 +178,8 @@ def resultado(stop_loss, take_profit, open_price, objetivo, acumulado):
     message = "% Acumulado: " + str(acumulado[0])
     TelegramBot.send_message(message)
 
+
+
 """
 # Pruebas con valores aleatorios
 print(calc_stop_loss_sells([10, 15, 12, 23, 24, 20]))
@@ -210,11 +212,13 @@ for kline in klines[1]:
     list_lows.append(kline[2])
 print(calc_stop_loss_sells(list_lows))"""
 
+
 operamos = False
 medias_comprobadas = False
 saved_adx = False
 pruebas = False
 acumulado = [0]
+objetivo = -1
 
 while True:
     minutos = datetime.datetime.now().minute
@@ -228,7 +232,8 @@ while True:
             objetivo = compararMedias()
             medias_comprobadas = True
 
-    if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58):
+
+    if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58)  and objetivo != -1:
         if not saved_adx:
             lista_DMI = getDMI(objetivo)[1]
             saved_adx = True
@@ -237,6 +242,7 @@ while True:
         else:
             print("No hay oportunidad")
             print(lista_DMI)
+
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos:
@@ -265,6 +271,7 @@ while True:
             # Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
             resultado_operacion = threading.Thread(target=resultado, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
+
 
         saved_adx = False
         medias_comprobadas = False
