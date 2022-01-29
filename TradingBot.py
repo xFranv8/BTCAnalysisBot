@@ -221,6 +221,7 @@ while True:
 
             print(message)
             TelegramBot.send_message(message)
+            operamos = False
         saved_adx = False
         medias_comprobadas = False
         pruebas = False
