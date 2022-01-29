@@ -6,7 +6,7 @@ import threading
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
 TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM"
-
+testnet = "https://testnet.binancefuture.com"
 
 def get_klines(n):
     # GET a https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m
