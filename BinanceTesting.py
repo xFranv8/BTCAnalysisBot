@@ -18,8 +18,6 @@ python spot.py
 ```
 """
 
-KEY = "5Fjugl2glBkbvsqHafaUwtHe3bRq1sx7cCEzN3Pmj5xOltqw2VMgLGZ0V9taxeSJ"
-SECRET = "rSVN7XlLCLYpuE2DAePYOkH2zVM3flR0QHsRZwTVq0pgek8jcHX1DyxNkPUJCnba"
 
 # Claves DanielMegaRabón para testear
 KEY_D = "b94b3f278f28a791d7764ea0bebb38f5a73dea4e4fec7eb6cf367103eafa0bcb"
@@ -31,16 +29,19 @@ BASE_URL_TESTNET = 'https://testnet.binancefuture.com' # testnet base url
 
 """ ======  begin of functions, you don't need to touch ====== """
 
+
 def hashing(query_string):
     return hmac.new(
         SECRET_D.encode("utf-8"), query_string.encode("utf-8"), hashlib.sha256
     ).hexdigest()
+
 
 def get_timestamp():
     servertime = requests.get(BASE_URL + "/fapi/v1/time")
     servertimeobject = json.loads(servertime.text)
     servertimeint = servertimeobject['serverTime']
     return servertimeint
+
 
 def dispatch_request(http_method):
     session = requests.Session()
@@ -53,6 +54,7 @@ def dispatch_request(http_method):
         "PUT": session.put,
         "POST": session.post,
     }.get(http_method, "GET")
+
 
 # used for sending request requires the signature
 def send_signed_request(http_method, url_path, payload={}):
@@ -69,6 +71,7 @@ def send_signed_request(http_method, url_path, payload={}):
     params = {"url": url, "params": {}}
     response = dispatch_request(http_method)(**params)
     return response.json()
+
 
 def buy(SL, TP, porcentaje=0.9):
     params = {
@@ -134,6 +137,7 @@ def buy(SL, TP, porcentaje=0.9):
     response = send_signed_request("POST", "/fapi/v1/order", params)
     print(response)
 
+
 def sell(SL, TP, porcentaje=0.9):
     params = {
         "symbol": "BTCUSDT",
@@ -198,7 +202,8 @@ def sell(SL, TP, porcentaje=0.9):
     response = send_signed_request("POST", "/fapi/v1/order", params)
     print(response)
 
-def getPnL():
+
+def get_PnL():
     params = {
         "symbol": "BTCUSDT",
     }
@@ -220,3 +225,4 @@ def getPnL():
 #buy(30000, 40000, 0.2)
 #sell(40000, 30000)
 #getPnL()
+
