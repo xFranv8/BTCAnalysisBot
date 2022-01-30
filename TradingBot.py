@@ -137,6 +137,7 @@ def calc_take_profit(SL, open_price):
     take_profit = ((100 - porcentaje_TP) / 100) * open_price
     return take_profit
 
+
 def resultado(stop_loss, take_profit, open_price, objetivo, acumulado):
     # Calculo los % para mostrarlos luego segun el open price, el stop_loss y el take_profit
     porcentaje_SL = 100 - ((stop_loss * 100)/open_price)
