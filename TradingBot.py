@@ -2,7 +2,8 @@ from time import sleep
 import requests, datetime, TelegramBot
 import json
 import threading
-
+import pyfiglet
+from pyfiglet import Figlet
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
 TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM"
@@ -39,9 +40,11 @@ def getDMI(objetivo):
         lista_dmis = []
 
         for v in values:
-            if objetivo == 0:
+            if objetivo == -1:
+                return [False, -1]
+            elif objetivo == 0:
                 lista_dmis.append(float(v["minusdi"]))
-            else:
+            elif objetivo == 1:
                 lista_dmis.append(float(v["plusdi"]))
         return (True, lista_dmis)
 
@@ -178,6 +181,10 @@ def resultado(stop_loss, take_profit, open_price, objetivo, acumulado):
     message = "% Acumulado: " + str(acumulado[0])
     TelegramBot.send_message(message)
 
+def banner():
+    custom_fig = Figlet(font='big')
+    print(custom_fig.renderText('BTC Trading Bot'))
+    print("Bot inicializado ....")
 
 
 """
@@ -220,6 +227,7 @@ pruebas = False
 acumulado = [0]
 objetivo = -1
 
+banner()
 while True:
     minutos = datetime.datetime.now().minute
 
@@ -232,17 +240,12 @@ while True:
             objetivo = compararMedias()
             medias_comprobadas = True
 
-
     if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58)  and objetivo != -1:
         if not saved_adx:
             lista_DMI = getDMI(objetivo)[1]
             saved_adx = True
         if lista_DMI[0] > 25.00 and lista_DMI[1] < 25.00 and objetivo != -1:
                 operamos = True
-        else:
-            print("No hay oportunidad")
-            print(lista_DMI)
-
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos:
@@ -272,16 +275,6 @@ while True:
             resultado_operacion = threading.Thread(target=resultado, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
 
-
         saved_adx = False
         medias_comprobadas = False
         pruebas = False
-
-"""if objetivo == -1:
-        print("Error al realizar las peticiones.")
-    elif objetivo == 0:
-        print("Buscamos ventas")
-    elif objetivo == 1:
-        print("Buscamos compras")
-
-    sleep(20)"""
