@@ -20,16 +20,21 @@ python spot.py
 
 KEY = "5Fjugl2glBkbvsqHafaUwtHe3bRq1sx7cCEzN3Pmj5xOltqw2VMgLGZ0V9taxeSJ"
 SECRET = "rSVN7XlLCLYpuE2DAePYOkH2zVM3flR0QHsRZwTVq0pgek8jcHX1DyxNkPUJCnba"
+
+# Claves DanielMegaRabón para testear
+KEY_D = "b94b3f278f28a791d7764ea0bebb38f5a73dea4e4fec7eb6cf367103eafa0bcb"
+SECRET_D = "40916e9b070693fd166cbab6222c58d0290b65433ae1942aa151d44d953b258a"
+
+
 BASE_URL = "https://fapi.binance.com"  # production base url
-# BASE_URL = 'https://testnet.binance.vision' # testnet base url
+BASE_URL_TESTNET = 'https://testnet.binancefuture.com' # testnet base url
 
 """ ======  begin of functions, you don't need to touch ====== """
 
 def hashing(query_string):
     return hmac.new(
-        SECRET.encode("utf-8"), query_string.encode("utf-8"), hashlib.sha256
+        SECRET_D.encode("utf-8"), query_string.encode("utf-8"), hashlib.sha256
     ).hexdigest()
-
 
 def get_timestamp():
     servertime = requests.get(BASE_URL + "/fapi/v1/time")
@@ -37,11 +42,10 @@ def get_timestamp():
     servertimeint = servertimeobject['serverTime']
     return servertimeint
 
-
 def dispatch_request(http_method):
     session = requests.Session()
     session.headers.update(
-        {"Content-Type": "application/json;charset=utf-8", "X-MBX-APIKEY": KEY}
+        {"Content-Type": "application/json;charset=utf-8", "X-MBX-APIKEY": KEY_D}
     )
     return {
         "GET": session.get,
@@ -49,7 +53,6 @@ def dispatch_request(http_method):
         "PUT": session.put,
         "POST": session.post,
     }.get(http_method, "GET")
-
 
 # used for sending request requires the signature
 def send_signed_request(http_method, url_path, payload={}):
@@ -60,27 +63,160 @@ def send_signed_request(http_method, url_path, payload={}):
         query_string = "timestamp={}".format(get_timestamp())
 
     url = (
-        BASE_URL + url_path + "?" + query_string + "&signature=" + hashing(query_string)
+        BASE_URL_TESTNET + url_path + "?" + query_string + "&signature=" + hashing(query_string)
     )
     print("{} {}".format(http_method, url))
     params = {"url": url, "params": {}}
     response = dispatch_request(http_method)(**params)
     return response.json()
 
+def buy(SL, TP, porcentaje=0.9):
+    params = {
+        "symbol": "BTCUSDT",
+    }
 
+    response = send_signed_request("GET", "/fapi/v1/ticker/price", params)
+    precio = float(response['price'])
 
-""" ======  end of functions ====== """
+    response = send_signed_request("GET", "/fapi/v2/balance")
+    balance = float(response[1]['balance']) * porcentaje
 
-# # place an order
-# if you see order response, then the parameters setting is correct
-params = {
-    "symbol": "BTCUSDT",
-    "side": "BUY",
-    "type": "MARKET",
-    "quantity": 0.001,
-}
+    cantidad_total = balance / precio * 5
+    cantidad_total = round(cantidad_total, 3)
 
-response = send_signed_request("POST", "/fapi/v1/order/test", params)
-print(response)
+    params = {
+        "symbol": "BTCUSDT",
+        "leverage": 5,
+    }
 
+    response = send_signed_request("POST", "/fapi/v1/leverage", params)
+    print(response)
 
+    params = {
+        "symbol": "BTCUSDT",
+        "marginType": "ISOLATED",
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/marginType", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "type": "MARKET",
+        "newClientOrderId": "Test1",
+        "quantity": cantidad_total,
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "SELL",
+        "type": "TAKE_PROFIT_MARKET",
+        "stopPrice": str(TP),
+        "newClientOrderId": "Test1",
+        "quantity": cantidad_total,
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "SELL",
+        "type": "STOP_MARKET",
+        "stopPrice": str(SL),
+        "quantity": cantidad_total,
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+def sell(SL, TP, porcentaje=0.9):
+    params = {
+        "symbol": "BTCUSDT",
+    }
+
+    response = send_signed_request("GET", "/fapi/v1/ticker/price", params)
+    precio = float(response['price'])
+
+    response = send_signed_request("GET", "/fapi/v2/balance")
+    balance = float(response[1]['balance']) * porcentaje
+
+    cantidad_total = balance / precio * 5
+    cantidad_total = round(cantidad_total, 3)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "leverage": 5,
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/leverage", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "marginType": "ISOLATED",
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/marginType", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "SELL",
+        "type": "MARKET",
+        "newClientOrderId": "Test1",
+        "quantity": cantidad_total,
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "type": "TAKE_PROFIT_MARKET",
+        "stopPrice": str(TP),
+        "newClientOrderId": "Test1",
+        "quantity": cantidad_total,
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "type": "STOP_MARKET",
+        "stopPrice": str(SL),
+        "quantity": cantidad_total,
+    }
+
+    response = send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+def getPnL():
+    params = {
+        "symbol": "BTCUSDT",
+    }
+
+    acu = 0
+    response = send_signed_request("GET", "/fapi/v1/userTrades", params)
+    for position in response:
+        acu = acu + float(position['realizedPnl'])
+
+    params = {
+        "symbol": "BTCUSDT",
+        "incomeType": "COMMISSION",
+    }
+    response = send_signed_request("GET", "/fapi/v1/income", params)
+    for comission in response:
+        acu = acu + float(comission['income'])
+    print(acu)
+
+#buy(30000, 40000, 0.2)
+#sell(40000, 30000)
+#getPnL()

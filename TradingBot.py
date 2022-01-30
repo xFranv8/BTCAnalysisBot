@@ -186,40 +186,6 @@ def banner():
     print(custom_fig.renderText('BTC Trading Bot'))
     print("Bot inicializado ....")
 
-
-"""
-# Pruebas con valores aleatorios
-print(calc_stop_loss_sells([10, 15, 12, 23, 24, 20]))
-print(calc_stop_loss_buys([25, 20, 15, 10, 16, 11, 9, 14, 20, 21, 16, 19]))
-"""
-
-"""# Prueba obtener ADX.
-DMI = getDMI()
-if DMI[0]:
-    print(DMI[1]["adx"])
-    print(DMI[1]["plusdi"])
-    print(DMI[1]["minusdi"])
-else:
-    print("Error al realizar la peticion.")
-# Prueba obtener MA50.
-MA50 = getMA50()
-if MA50[0]:
-    print(MA50[1]["value"])
-else:
-    print("Error al realizar la peticion.")
-# Prueba obtener MA200.
-MA200 = getMA200()
-if MA200[0]:
-    print(MA200[1]["value"])
-else:
-    print("Error al realizar la peticion.")
-klines = get_klines(8)
-list_lows = []
-for kline in klines[1]:
-    list_lows.append(kline[2])
-print(calc_stop_loss_sells(list_lows))"""
-
-
 operamos = False
 medias_comprobadas = False
 saved_adx = False
