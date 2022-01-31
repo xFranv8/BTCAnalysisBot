@@ -257,15 +257,17 @@ while True:
         if operamos:
             last_klines = get_klines(15)
             open_price = float(last_klines[1][14][1])
-            lows = []
-            for kline in last_klines[1]:
-                lows.append(kline[3])
+            aux = []
             if objetivo == 1:
                 # Estamos en compras
-                stop_loss = float(calc_stop_loss_buys(lows))
+                for kline in last_klines[1]:
+                    aux.append(kline[3])
+                stop_loss = float(calc_stop_loss_buys(aux))
             else:
                 # Estamos en ventas
-                stop_loss = float(calc_stop_loss_sells(lows))
+                for kline in last_klines[1]:
+                    aux.append(kline[2])
+                stop_loss = float(calc_stop_loss_sells(aux))
 
             take_profit = calc_take_profit(stop_loss, open_price)
 
