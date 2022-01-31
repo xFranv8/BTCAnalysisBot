@@ -119,7 +119,7 @@ def buy(SL, TP, porcentaje=0.9):
         "side": "SELL",
         "type": "TAKE_PROFIT_MARKET",
         "stopPrice": str(TP),
-        "newClientOrderId": "Test1",
+        "newClientOrderId": "TP",
         "quantity": cantidad_total,
     }
 
@@ -131,6 +131,7 @@ def buy(SL, TP, porcentaje=0.9):
         "side": "SELL",
         "type": "STOP_MARKET",
         "stopPrice": str(SL),
+        "newClientOrderId": "SL",
         "quantity": cantidad_total,
     }
 
@@ -184,7 +185,7 @@ def sell(SL, TP, porcentaje=0.9):
         "side": "BUY",
         "type": "TAKE_PROFIT_MARKET",
         "stopPrice": str(TP),
-        "newClientOrderId": "Test1",
+        "newClientOrderId": "TP",
         "quantity": cantidad_total,
     }
 
@@ -196,6 +197,7 @@ def sell(SL, TP, porcentaje=0.9):
         "side": "BUY",
         "type": "STOP_MARKET",
         "stopPrice": str(SL),
+        "newClientOrderId": "SL",
         "quantity": cantidad_total,
     }
 
@@ -222,7 +224,20 @@ def get_PnL():
         acu = acu + float(comission['income'])
     print(acu)
 
+
+def existsOpenOrders():
+    params = {
+        "symbol": "BTCUSDT",
+        "origClientOrderId": "Test1",
+    }
+
+    response = send_signed_request("GET", "/fapi/v1/order", params)
+
+    print(response)
+
+
 #buy(30000, 40000, 0.2)
 #sell(40000, 30000)
 #getPnL()
+existsOpenOrders()
 

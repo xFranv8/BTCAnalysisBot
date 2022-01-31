@@ -1,10 +1,10 @@
 from time import sleep
+from pyfiglet import Figlet
+
 import requests, datetime, TelegramBot
 import json
 import threading
 import pyfiglet
-from pyfiglet import Figlet
-
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
 TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM"
@@ -192,39 +192,6 @@ def banner():
     print("Bot inicializado ....")
 
 
-"""
-# Pruebas con valores aleatorios
-print(calc_stop_loss_sells([10, 15, 12, 23, 24, 20]))
-print(calc_stop_loss_buys([25, 20, 15, 10, 16, 11, 9, 14, 20, 21, 16, 19]))
-"""
-
-"""# Prueba obtener ADX.
-DMI = getDMI()
-if DMI[0]:
-    print(DMI[1]["adx"])
-    print(DMI[1]["plusdi"])
-    print(DMI[1]["minusdi"])
-else:
-    print("Error al realizar la peticion.")
-# Prueba obtener MA50.
-MA50 = getMA50()
-if MA50[0]:
-    print(MA50[1]["value"])
-else:
-    print("Error al realizar la peticion.")
-# Prueba obtener MA200.
-MA200 = getMA200()
-if MA200[0]:
-    print(MA200[1]["value"])
-else:
-    print("Error al realizar la peticion.")
-klines = get_klines(8)
-list_lows = []
-for kline in klines[1]:
-    list_lows.append(kline[2])
-print(calc_stop_loss_sells(list_lows))"""
-
-
 operamos = False
 medias_comprobadas = False
 saved_adx = False
@@ -282,6 +249,9 @@ while True:
             # Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
             resultado_operacion = threading.Thread(target=resultado, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
+
+            # Esperamos hasta que el hilo haya terminado, cuando haya terminado continua la ejecucion.
+            threading.Thread.join()
 
         saved_adx = False
         medias_comprobadas = False
