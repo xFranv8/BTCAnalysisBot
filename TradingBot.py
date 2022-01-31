@@ -18,12 +18,13 @@ def get_klines(n):
 
     # Compruebo si existe algun problema al realizar la peticion.
     if r.status_code != 200:
-        return [False, -1]
+        return False, -1
     else:
-        # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera sencilla
+        # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera
+        # sencilla
         values = json.dumps(values)
         values = json.loads(values)
-        return (True, values[500-n:])
+        return True, values[500 - n:]
 
 
 def getDMI(objetivo):
@@ -141,7 +142,7 @@ def calc_take_profit(SL, open_price):
     return take_profit
 
 
-def resultado(stop_loss, take_profit, open_price, objetivo, acumulado):
+def result(stop_loss, take_profit, open_price, objetivo, acumulado):
     # Calculo los % para mostrarlos luego segun el open price, el stop_loss y el take_profit
     porcentaje_SL = 100 - ((stop_loss * 100)/open_price)
     porcentaje_TP = ((take_profit * 100)/open_price) - 100
@@ -205,7 +206,7 @@ while True:
     minutos = datetime.datetime.now().minute
 
     # Comprobamos la posicion de las dos medias a las horas correspondientes.
-    if (minutos == 12) or (minutos == 27) or (minutos == 42) or (minutos == 57):
+    if (minutos == 13) or (minutos == 27) or (minutos == 43) or (minutos == 57):
         # -1 Medias Iguales, no hacemos nada
         # 0 Buscamos ventas
         # 1 Buscamos compras.
@@ -213,12 +214,12 @@ while True:
             objetivo = compararMedias()
             medias_comprobadas = True
 
-    if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58)  and objetivo != -1:
+    if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58) and objetivo != -1:
         if not saved_adx:
             lista_DMI = getDMI(objetivo)[1]
             saved_adx = True
-        if lista_DMI[0] > 25.00 and lista_DMI[1] < 25.00 and objetivo != -1:
-                operamos = True
+        if lista_DMI[0] > 25.00 > lista_DMI[1] and objetivo != -1:
+            operamos = True
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos:
@@ -247,7 +248,7 @@ while True:
             operamos = False
 
             # Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
-            resultado_operacion = threading.Thread(target=resultado, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
+            resultado_operacion = threading.Thread(target=result, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
 
             # Esperamos hasta que el hilo haya terminado, cuando haya terminado continua la ejecucion.
