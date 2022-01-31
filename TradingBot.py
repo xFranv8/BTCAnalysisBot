@@ -35,7 +35,7 @@ def getDMI(objetivo):
 
     # Compruebo si existe algun problema al realizar la peticion.
     if r.status_code != 200:
-        return [False, -1]
+        return (False, -1)
     else:
         # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera sencilla
         values = json.dumps(values)
@@ -247,12 +247,12 @@ while True:
             TelegramBot.send_message(message)
             operamos = False
 
-            # Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
+            """# Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
             resultado_operacion = threading.Thread(target=result, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
 
             # Esperamos hasta que el hilo haya terminado, cuando haya terminado continua la ejecucion.
-            threading.Thread.join()
+            threading.Thread.join()"""
 
         saved_adx = False
         medias_comprobadas = False
