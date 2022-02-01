@@ -5,6 +5,7 @@ import requests, datetime, TelegramBot
 import json
 import threading
 import pyfiglet
+from pytz import timezone
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
 TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM"
@@ -203,7 +204,8 @@ objetivo = -1
 
 banner()
 while True:
-    minutos = datetime.datetime.now().minute
+    madrid = timezone('Europe/Madrid')
+    minutos = datetime.datetime.now(madrid).minute
 
     # Comprobamos la posicion de las dos medias a las horas correspondientes.
     if (minutos == 13) or (minutos == 27) or (minutos == 43) or (minutos == 57):
@@ -224,7 +226,7 @@ while True:
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos:
             last_klines = get_klines(15)
-            open_price = float(last_klines[1][14][1])
+            open_price = float(last_klines[1][14][4])
             aux = []
             if objetivo == 1:
                 # Estamos en compras
@@ -239,7 +241,7 @@ while True:
 
             take_profit = calc_take_profit(stop_loss, open_price)
 
-            message = "Empezamos operación con fecha: " + str(datetime.datetime.now()) + '\n' + \
+            message = "*Empezamos operación con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
                       "Precio de apertura de la operación: " + str(open_price) + '\n' +\
                       "STOP LOSS: " + str(stop_loss) + '\n' +\
                       "TAKE PROFIT: " + str(round(take_profit))
