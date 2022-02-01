@@ -79,7 +79,16 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
     TelegramBot.send_message(message)
 
 
-while True:
+def cancelAllOrders():
+    params = {
+        "symbol": "BTCUSDT",
+    }
+
+    response = BinanceAPI.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
+    print(response)
+
+
+"""while True:
     madrid = timezone('Europe/Madrid')
     minutos = datetime.datetime.now(madrid).minute
     # Comprobamos la posicion de las dos medias a las horas correspondientes.
@@ -127,14 +136,157 @@ while True:
         result(stop_loss, take_profit, open_price, objetivo, [0])
         input()
 
-        """# Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
+        # Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
         resultado_operacion = threading.Thread(target=result, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
         resultado_operacion.start()
 
         # Esperamos hasta que el hilo haya terminado, cuando haya terminado continua la ejecucion.
-            threading.Thread.join()"""
+            threading.Thread.join()
         saved_adx = False
         medias_comprobadas = False
     else:
         print("orden ya abierta")
-        input()
+        input()"""
+
+
+def sell(SL, TP, porcentaje=0.9):
+    params = {
+        "symbol": "BTCUSDT",
+    }
+
+    response = BinanceAPI.send_signed_request("GET", "/fapi/v1/ticker/price", params)
+    precio = float(response['price'])
+
+    response = BinanceAPI.send_signed_request("GET", "/fapi/v2/balance")
+    balance = float(response[1]['balance']) * porcentaje
+
+    cantidad_total = balance / precio * 5
+    cantidad_total = round(cantidad_total, 3)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "leverage": 5,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/leverage", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "marginType": "ISOLATED",
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/marginType", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "SELL",
+        "type": "MARKET",
+        "newClientOrderId": "Test1",
+        "quantity": 1,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "type": "TAKE_PROFIT_MARKET",
+        "stopPrice": str(TP),
+        "newClientOrderId": "TP",
+        "quantity": 1,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "type": "STOP_MARKET",
+        "stopPrice": str(SL),
+        "newClientOrderId": "SL",
+        "quantity": 1,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+    return cantidad_total
+
+
+"############################"
+
+
+def buy(SL, TP, porcentaje=0.9):
+    params = {
+        "symbol": "BTCUSDT",
+    }
+
+    response = BinanceAPI.send_signed_request("GET", "/fapi/v1/ticker/price", params)
+    precio = float(response['price'])
+
+    response = BinanceAPI.send_signed_request("GET", "/fapi/v2/balance")
+    balance = float(response[1]['balance']) * porcentaje
+
+    cantidad_total = balance / precio * 5
+    cantidad_total = round(cantidad_total, 3)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "leverage": 5,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/leverage", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "marginType": "ISOLATED",
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/marginType", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "type": "MARKET",
+        "newClientOrderId": "Test1",
+        "quantity": 1,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "SELL",
+        "type": "TAKE_PROFIT_MARKET",
+        "stopPrice": str(TP),
+        "newClientOrderId": "TP",
+        "quantity": 1,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "SELL",
+        "type": "STOP_MARKET",
+        "stopPrice": str(SL),
+        "newClientOrderId": "SL",
+        "quantity": 1,
+    }
+
+    response = BinanceAPI.send_signed_request("POST", "/fapi/v1/order", params)
+    print(response)
+
+sell(60000, 10000)
+cancelAllOrders()
+input("")
+buy(10000, 60000)
+input("")
+cancelAllOrders()

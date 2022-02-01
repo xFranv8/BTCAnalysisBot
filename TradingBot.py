@@ -154,7 +154,7 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
                 exito = True
             # En este caso el Low es inferior o igual al SL por lo que hubieramos perdido.
             elif (last_line[1][0][3] <= stop_loss):
-                message = "Operacion perdida!!!\n" + "% Realizado: " + str(porcentaje_SL)
+                message = "Operacion perdida!!!\n" + "% Realizado: " + str(porcentaje_SL*-1)
                 acumulado[0] = acumulado[0] - float(porcentaje_SL)
                 TelegramBot.send_message(message)
                 exito = True
@@ -168,7 +168,7 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
                 exito = True
             # En este caso el High es superior o igual al SL por lo que hubieramos perdido
             elif (last_line[1][0][2] >= stop_loss):
-                message = "Operacion perdida!!!\n" + "% Realizado: " + str(porcentaje_SL)
+                message = "Operacion perdida!!!\n" + "% Realizado: " + str(porcentaje_SL*-1)
                 acumulado[0] = acumulado[0] - float(porcentaje_SL)
                 TelegramBot.send_message(message)
                 exito = True
@@ -243,6 +243,8 @@ while True:
             # cuenta de daniel ya que no se cierran por defecto porque estamos cogiendo datos con otros precios
             while BinanceAPI.existsOpenOrders():
                 respuesta = result(stop_loss, take_profit, open_price, objetivo, [0])
+
+
             TelegramBot.send_message(respuesta)
             """# Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
             resultado_operacion = threading.Thread(target=result, args=(stop_loss, take_profit, open_price, objetivo, acumulado))

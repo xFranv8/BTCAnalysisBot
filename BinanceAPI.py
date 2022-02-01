@@ -114,6 +114,7 @@ class BinanceAPI:
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
         print(response)
+        return cantidad_total
 
     def sell(self, SL, TP, porcentaje=0.9):
         params = {
@@ -179,6 +180,7 @@ class BinanceAPI:
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
         print(response)
+        return cantidad_total
 
     def get_PnL(self):
         params = {
@@ -225,3 +227,11 @@ class BinanceAPI:
             values = json.dumps(values)
             values = json.loads(values)
             return True, values[500 - n:]
+
+    def cancelAllOrders(self, cantidad_a_vender, objetivo):
+        params = {
+            "symbol": "BTCUSDT",
+        }
+
+        response = self.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
+        print(response)
