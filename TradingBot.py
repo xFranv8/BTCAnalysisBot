@@ -1,37 +1,23 @@
 from time import sleep
 from pyfiglet import Figlet
-
-import requests, datetime, TelegramBot
+import requests, datetime, TelegramBot, BinanceAPI
 import json
-import threading
-import pyfiglet
 from pytz import timezone
 
 # Constante con el Token de la API para obtener el valor de los indicadores.
 TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM"
 testnet = "https://testnet.binancefuture.com"
-
-
-def get_klines(n):
-    # GET a https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m
-    r = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m')
-    values = r.json()
-
-    # Compruebo si existe algun problema al realizar la peticion.
-    if r.status_code != 200:
-        return False, -1
-    else:
-        # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera
-        # sencilla
-        values = json.dumps(values)
-        values = json.loads(values)
-        return True, values[500 - n:]
+# Claves DanielMegaRabón para testear
+KEY_D = "b94b3f278f28a791d7764ea0bebb38f5a73dea4e4fec7eb6cf367103eafa0bcb"
+SECRET_D = "40916e9b070693fd166cbab6222c58d0290b65433ae1942aa151d44d953b258a"
+BinanceAPI = BinanceAPI.BinanceAPI(KEY_D, SECRET_D)
 
 
 def getDMI(objetivo):
     # Peticion GET al endpoint de la API que devuelve los valores de los indicadores.
     # Seria muy interesante obtener el ADX y el resto de valores de Binance Futuros USDM. https://api.taapi.io/dmi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM&exchange=binanceusdm&symbol=BTC/USDT&interval=15m
-    r = requests.get('https://api.taapi.io/dmi?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&backtracks=2')
+    r = requests.get(
+        'https://api.taapi.io/dmi?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&backtracks=2')
     values = r.json()
 
     # Compruebo si existe algun problema al realizar la peticion.
@@ -56,7 +42,8 @@ def getDMI(objetivo):
 def getMA50():
     # Peticion GET al endpoint de la API que devuelve los valores de los indicadores.
     # Seria muy interesante obtener el ADX y el resto de valores de Binance Futuros USDM. https://api.taapi.io/dmi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM&exchange=binanceusdm&symbol=BTC/USDT&interval=15m
-    r = requests.get('https://api.taapi.io/ma?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&optInTimePeriod=50')
+    r = requests.get(
+        'https://api.taapi.io/ma?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&optInTimePeriod=50')
     values = r.json()
 
     # Compruebo si existe algun problema al realizar la peticion.
@@ -72,7 +59,8 @@ def getMA50():
 def getMA200():
     # Peticion GET al endpoint de la API que devuelve los valores de los indicadores.
     # Seria muy interesante obtener el ADX y el resto de valores de Binance Futuros USDM. https://api.taapi.io/dmi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM&exchange=binanceusdm&symbol=BTC/USDT&interval=15m
-    r = requests.get('https://api.taapi.io/ma?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&optInTimePeriod=200')
+    r = requests.get(
+        'https://api.taapi.io/ma?secret=' + TOKEN_API_INDICATORS + '&exchange=binance&symbol=BTC/USDT&interval=15m&optInTimePeriod=200')
     values = r.json()
 
     # Compruebo si existe algun problema al realizar la peticion.
@@ -145,8 +133,8 @@ def calc_take_profit(SL, open_price):
 
 def result(stop_loss, take_profit, open_price, objetivo, acumulado):
     # Calculo los % para mostrarlos luego segun el open price, el stop_loss y el take_profit
-    porcentaje_SL = 100 - ((stop_loss * 100)/open_price)
-    porcentaje_TP = ((take_profit * 100)/open_price) - 100
+    porcentaje_SL = 100 - ((stop_loss * 100) / open_price)
+    porcentaje_TP = ((take_profit * 100) / open_price) - 100
 
     # Seteo una variable booleana a False para que hasta que no se haya terminado la operacion siga monitorizando si toca TP o SL.
     exito = False
@@ -154,7 +142,7 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
     while not exito:
         sleep(60)
         # Obtengo la ultima vela que se ha formado constantemente hasta que el High o el Low superen al SL o al TP.
-        last_line = get_klines(1)
+        last_line = BinanceAPI.get_klines(1)
 
         # Si estamos en compras el High debe ser superior al TP para ganar o el Low debe ser inferior al SL para perder.
         if objetivo == 1:
@@ -194,6 +182,7 @@ def banner():
     print("Bot inicializado ....")
 
 
+banner()
 operamos = False
 medias_comprobadas = False
 saved_adx = False
@@ -201,8 +190,6 @@ pruebas = False
 acumulado = [0]
 objetivo = -1
 
-
-banner()
 while True:
     madrid = timezone('Europe/Madrid')
     minutos = datetime.datetime.now(madrid).minute
@@ -224,8 +211,8 @@ while True:
             operamos = True
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
-        if operamos:
-            last_klines = get_klines(15)
+        if operamos and not BinanceAPI.existsOpenOrders():
+            last_klines = BinanceAPI.get_klines(15)
             open_price = float(last_klines[1][14][4])
             aux = []
             if objetivo == 1:
@@ -242,8 +229,8 @@ while True:
             take_profit = calc_take_profit(stop_loss, open_price)
 
             message = "*Empezamos operación con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
-                      "Precio de apertura de la operación: " + str(open_price) + '\n' +\
-                      "STOP LOSS: " + str(stop_loss) + '\n' +\
+                      "Precio de apertura de la operación: " + str(open_price) + '\n' + \
+                      "STOP LOSS: " + str(stop_loss) + '\n' + \
                       "TAKE PROFIT: " + str(round(take_profit))
             print(message)
             TelegramBot.send_message(message)
