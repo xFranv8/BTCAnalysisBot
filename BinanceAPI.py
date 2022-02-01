@@ -116,6 +116,66 @@ class BinanceAPI:
         print(response)
         return cantidad_total
 
+    def buyV2(self, SL, TP, cantidad_total):
+        params = {
+            "symbol": "BTCUSDT",
+        }
+
+        response = self.send_signed_request("GET", "/fapi/v1/ticker/price", params)
+        precio = float(response['price'])
+
+        params = {
+            "symbol": "BTCUSDT",
+            "leverage": 5,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/leverage", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "marginType": "ISOLATED",
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/marginType", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "side": "BUY",
+            "type": "MARKET",
+            "newClientOrderId": "Test1",
+            "quantity": cantidad_total,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "side": "SELL",
+            "type": "TAKE_PROFIT_MARKET",
+            "stopPrice": str(TP),
+            "newClientOrderId": "TP",
+            "quantity": cantidad_total,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "side": "SELL",
+            "type": "STOP_MARKET",
+            "stopPrice": str(SL),
+            "newClientOrderId": "SL",
+            "quantity": cantidad_total,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print(response)
+
+
     def sell(self, SL, TP, porcentaje=0.9):
         params = {
             "symbol": "BTCUSDT",
@@ -182,6 +242,65 @@ class BinanceAPI:
         print(response)
         return cantidad_total
 
+    def sellV2(self, SL, TP, cantidad_total):
+        params = {
+            "symbol": "BTCUSDT",
+        }
+
+        response = self.send_signed_request("GET", "/fapi/v1/ticker/price", params)
+        precio = float(response['price'])
+
+        params = {
+            "symbol": "BTCUSDT",
+            "leverage": 5,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/leverage", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "marginType": "ISOLATED",
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/marginType", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "side": "SELL",
+            "type": "MARKET",
+            "newClientOrderId": "Test1",
+            "quantity": cantidad_total,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "side": "BUY",
+            "type": "TAKE_PROFIT_MARKET",
+            "stopPrice": str(TP),
+            "newClientOrderId": "TP",
+            "quantity": cantidad_total,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print(response)
+
+        params = {
+            "symbol": "BTCUSDT",
+            "side": "BUY",
+            "type": "STOP_MARKET",
+            "stopPrice": str(SL),
+            "newClientOrderId": "SL",
+            "quantity": cantidad_total,
+        }
+
+        response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print(response)
+
     def get_PnL(self):
         params = {
             "symbol": "BTCUSDT",
@@ -229,9 +348,39 @@ class BinanceAPI:
             return True, values[500 - n:]
 
     def cancelAllOrders(self, cantidad_a_vender, objetivo):
+
         params = {
             "symbol": "BTCUSDT",
         }
+        response = self.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
+        print(response)
+        if objetivo == 1:
+            self.sellV2(150000, 2000, cantidad_a_vender)
+        else:
+            self.buyV2(2000, 150000, cantidad_a_vender)
 
         response = self.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
         print(response)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

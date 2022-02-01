@@ -149,7 +149,7 @@ def cancelAllOrders():
         input()"""
 
 
-def sell(SL, TP, porcentaje=0.9):
+"""def sell(SL, TP, porcentaje=0.9):
     params = {
         "symbol": "BTCUSDT",
     }
@@ -289,4 +289,8 @@ cancelAllOrders()
 input("")
 buy(10000, 60000)
 input("")
-cancelAllOrders()
+cancelAllOrders()"""
+
+cantidad = BinanceAPI.sell(150000, 2000)
+input()
+BinanceAPI.cancelAllOrders(cantidad, 0)
