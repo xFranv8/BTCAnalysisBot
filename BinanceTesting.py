@@ -228,16 +228,23 @@ def get_PnL():
 def existsOpenOrders():
     params = {
         "symbol": "BTCUSDT",
-        "origClientOrderId": "Test1",
     }
 
-    response = send_signed_request("GET", "/fapi/v1/order", params)
+    response = send_signed_request("GET", "/fapi/v2/positionRisk", params)
 
-    print(response)
+    if response[0]['entryPrice'] == '0.0':
+        return False
+    else:
+        return True
 
 
 #buy(30000, 40000, 0.2)
 #sell(40000, 30000)
 #getPnL()
-existsOpenOrders()
+exite = existsOpenOrders()
+
+if exite:
+    print("Existe ordenes abiertas")
+else:
+    print("No existen ordenes")
 
