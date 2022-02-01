@@ -140,7 +140,7 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
     exito = False
 
     while not exito:
-        sleep(60)
+        sleep(30)
         # Obtengo la ultima vela que se ha formado constantemente hasta que el High o el Low superen al SL o al TP.
         last_line = BinanceAPI.get_klines(1)
 
@@ -173,7 +173,7 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
                 TelegramBot.send_message(message)
                 exito = True
     message = "% Acumulado: " + str(acumulado[0])
-    TelegramBot.send_message(message)
+    return message
 
 
 def banner():
@@ -220,29 +220,36 @@ while True:
                 for kline in last_klines[1]:
                     aux.append(kline[3])
                 stop_loss = float(calc_stop_loss_buys(aux))
+                take_profit = calc_take_profit(stop_loss, open_price)
+                BinanceAPI.buy(stop_loss, take_profit)
+                type = "COMPRA"
             else:
                 # Estamos en ventas
                 for kline in last_klines[1]:
                     aux.append(kline[2])
                 stop_loss = float(calc_stop_loss_sells(aux))
+                take_profit = calc_take_profit(stop_loss, open_price)
+                BinanceAPI.sell(stop_loss, take_profit)
+                type = "VENTA"
 
-            take_profit = calc_take_profit(stop_loss, open_price)
-
-            message = "*Empezamos operación con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
+            message = "Empezamos operación de " + type + "con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
                       "Precio de apertura de la operación: " + str(open_price) + '\n' + \
                       "STOP LOSS: " + str(stop_loss) + '\n' + \
                       "TAKE PROFIT: " + str(round(take_profit))
             print(message)
             TelegramBot.send_message(message)
             operamos = False
-
+            # Tener en cuenta que probablemente haya que cerrar las operaciones manualmente desde la testnet con la
+            # cuenta de daniel ya que no se cierran por defecto porque estamos cogiendo datos con otros precios
+            while BinanceAPI.existsOpenOrders():
+                respuesta = result(stop_loss, take_profit, open_price, objetivo, [0])
+            TelegramBot.send_message(respuesta)
             """# Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
             resultado_operacion = threading.Thread(target=result, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
-
             # Esperamos hasta que el hilo haya terminado, cuando haya terminado continua la ejecucion.
             threading.Thread.join()"""
 
         saved_adx = False
         medias_comprobadas = False
-        pruebas = False
+
