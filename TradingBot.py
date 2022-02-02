@@ -147,13 +147,13 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
         # Si estamos en compras el High debe ser superior al TP para ganar o el Low debe ser inferior al SL para perder.
         if objetivo == 1:
             # En este caso el High es superior o igual al TP, por lo que habriamos ganado.
-            if (last_line[1][0][2] >= take_profit):
+            if float(last_line[1][0][2]) >= take_profit:
                 message = "Operacion ganada!!!\n" + "% Realizado: " + str(porcentaje_TP)
                 acumulado[0] = acumulado[0] + float(porcentaje_TP)
                 TelegramBot.send_message(message)
                 exito = True
             # En este caso el Low es inferior o igual al SL por lo que hubieramos perdido.
-            elif (last_line[1][0][3] <= stop_loss):
+            elif float(last_line[1][0][3]) <= stop_loss:
                 message = "Operacion perdida!!!\n" + "% Realizado: " + str(-porcentaje_SL)
                 acumulado[0] = acumulado[0] - float(porcentaje_SL)
                 TelegramBot.send_message(message)
@@ -161,13 +161,13 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
         # Si estamos aqui es porque objetivo es igual a 0 lo que significa que estamos en ventas y es al reves.
         else:
             # En este caso el Low es inferior o igual al TP profit por lo que hubieramos ganado.
-            if (last_line[1][0][3] <= take_profit):
+            if float(last_line[1][0][3]) <= take_profit:
                 message = "Operacion ganada!!!\n" + "% Realizado: " + str(porcentaje_TP)
                 acumulado[0] = acumulado[0] + float(porcentaje_TP)
                 TelegramBot.send_message(message)
                 exito = True
             # En este caso el High es superior o igual al SL por lo que hubieramos perdido
-            elif (last_line[1][0][2] >= stop_loss):
+            elif float(last_line[1][0][2]) >= stop_loss:
                 message = "Operacion perdida!!!\n" + "% Realizado: " + str(-porcentaje_SL)
                 acumulado[0] = acumulado[0] - float(porcentaje_SL)
                 TelegramBot.send_message(message)
@@ -245,6 +245,7 @@ while True:
                 respuesta = result(stop_loss, take_profit, open_price, objetivo, [0])
                 BinanceAPI.cancelAllOrders(cantidad_orden_contraria, objetivo)
             TelegramBot.send_message(respuesta)
+
             """# Inicializo el hilo que se va a encargar de comprobar que ha pasado con la operacion.
             resultado_operacion = threading.Thread(target=result, args=(stop_loss, take_profit, open_price, objetivo, acumulado))
             resultado_operacion.start()
@@ -253,4 +254,3 @@ while True:
 
         saved_adx = False
         medias_comprobadas = False
-

@@ -1,4 +1,4 @@
-import json, requests, hmac, hashlib
+import json, requests, hmac, hashlib, numpy as np, tensorflow as tf, matplotlib.pyplot as plt
 from urllib.parse import urlencode
 
 
@@ -175,7 +175,6 @@ class BinanceAPI:
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
         print(response)
 
-
     def sell(self, SL, TP, porcentaje=0.9):
         params = {
             "symbol": "BTCUSDT",
@@ -334,7 +333,7 @@ class BinanceAPI:
 
     def get_klines(self, n):
         # GET a https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m
-        r = requests.get(self.BASE_URL +'/fapi/v1/klines?symbol=BTCUSDT&interval=15m')
+        r = requests.get(self.BASE_URL + '/fapi/v1/klines?symbol=BTCUSDT&interval=15m')
         values = r.json()
 
         # Compruebo si existe algun problema al realizar la peticion.
@@ -361,26 +360,4 @@ class BinanceAPI:
 
         response = self.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
         print(response)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

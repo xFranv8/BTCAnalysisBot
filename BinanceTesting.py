@@ -1,10 +1,12 @@
-import datetime, BinanceAPI
+import datetime, BinanceAPI, numpy as np
 from time import sleep
 
+import tensorflow as tf
+from matplotlib import pyplot as plt
 from pytz import timezone
 from pyfiglet import Figlet
 
-import TelegramBot
+
 
 
 def banner():
@@ -35,7 +37,7 @@ def compararMedias():
     return 1
 
 
-def result(stop_loss, take_profit, open_price, objetivo, acumulado):
+"""def result(stop_loss, take_profit, open_price, objetivo, acumulado):
     # Calculo los % para mostrarlos luego segun el open price, el stop_loss y el take_profit
     porcentaje_SL = 100 - ((stop_loss * 100) / open_price)
     porcentaje_TP = ((take_profit * 100) / open_price) - 100
@@ -76,7 +78,7 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
                 TelegramBot.send_message(message)
                 exito = True
     message = "% Acumulado: " + str(acumulado[0])
-    TelegramBot.send_message(message)
+    TelegramBot.send_message(message)"""
 
 
 def cancelAllOrders():
@@ -105,7 +107,7 @@ def cancelAllOrders():
     if lista_DMI[0] > 25.00 > lista_DMI[1] and objetivo != -1:
         operamos = True
 
-    if operamos:  # and not BinanceAPI.existsOpenOrders():
+    if operamos and not BinanceAPI.existsOpenOrders():
         # last_klines = BinanceAPI.get_klines(15)
         open_price = 38927.15
         aux = []
@@ -291,6 +293,50 @@ buy(10000, 60000)
 input("")
 cancelAllOrders()"""
 
-cantidad = BinanceAPI.sell(150000, 2000)
+"""cantidad = BinanceAPI.sell(150000, 2000)
 input()
-BinanceAPI.cancelAllOrders(cantidad, 0)
+BinanceAPI.cancelAllOrders(cantidad, 0)"""
+
+
+"""dmi_binance = np.array(
+        [21.6499, 21.6349, 20.7740, 20.0176, 20.116, 17.9889, 17.2017, 16.1312, 15.4144, 15.0159, 18.1604, 18.6942,
+         20.7908, 20.9799, 19.3777, 21.1631, 21.00, 19.9675, 21.3735, 21.17, 23.1167, 24.9497])
+dmi_trading_view = np.array(
+        [22.5, 22.7, 21.9, 21.0, 21.1, 18.8, 18.1, 17.0, 16.2, 15.8, 19.2, 19.6, 21.8, 21.9, 20.3, 22.4, 22.5, 21.4,
+         23.1, 22.7, 25.2, 25.6], dtype=float)"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
