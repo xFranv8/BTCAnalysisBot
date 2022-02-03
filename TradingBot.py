@@ -162,14 +162,14 @@ def result(stop_loss, take_profit, open_price, objetivo, acumulado):
         else:
             # En este caso el Low es inferior o igual al TP profit por lo que hubieramos ganado.
             if float(last_line[1][0][3]) <= take_profit:
-                message = "Operacion ganada!!!\n" + "% Realizado: " + str(porcentaje_TP)
-                acumulado[0] = acumulado[0] + float(porcentaje_TP)
+                message = "Operacion ganada!!!\n" + "% Realizado: " + str(porcentaje_TP*-1)
+                acumulado[0] = acumulado[0] + float(porcentaje_TP*-1)
                 TelegramBot.send_message(message)
                 exito = True
             # En este caso el High es superior o igual al SL por lo que hubieramos perdido
             elif float(last_line[1][0][2]) >= stop_loss:
-                message = "Operacion perdida!!!\n" + "% Realizado: " + str(-porcentaje_SL)
-                acumulado[0] = acumulado[0] - float(porcentaje_SL)
+                message = "Operacion perdida!!!\n" + "% Realizado: " + str(porcentaje_SL)
+                acumulado[0] = acumulado[0] + float(porcentaje_SL)
                 TelegramBot.send_message(message)
                 exito = True
     message = "% Acumulado: " + str(acumulado[0])

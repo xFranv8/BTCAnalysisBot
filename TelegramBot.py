@@ -30,8 +30,8 @@ def BTCFearAndGreedIndex():
     return format_result
 
 
-mensaje = "Buenos días, este es el resumen del día.\n" \
+"""mensaje = "Buenos días, este es el resumen del día.\n" \
           "El precio del Bitcoin a dia de hoy es de : " + BTCPrice() + '\n' \
                                                                        "El valor de Fear and Greed Index es de: soy fran " + BTCFearAndGreedIndex()
 
-test_bot = send_message(mensaje)
+test_bot = send_message(mensaje)"""
