@@ -195,7 +195,7 @@ while True:
     minutos = datetime.datetime.now(madrid).minute
 
     # Comprobamos la posicion de las dos medias a las horas correspondientes.
-    if (minutos == 13) or (minutos == 27) or (minutos == 43) or (minutos == 57):
+    if (minutos == 13) or (minutos == 28) or (minutos == 43) or (minutos == 58):
         # -1 Medias Iguales, no hacemos nada
         # 0 Buscamos ventas
         # 1 Buscamos compras.
@@ -203,7 +203,7 @@ while True:
             objetivo = compararMedias()
             medias_comprobadas = True
 
-    if (minutos == 14) or (minutos == 28) or (minutos == 44) or (minutos == 58) and objetivo != -1:
+    if (minutos == 14) or (minutos == 29) or (minutos == 44) or (minutos == 59) and objetivo != -1:
         if not saved_adx:
             lista_DMI = getDMI(objetivo)[1]
             saved_adx = True
