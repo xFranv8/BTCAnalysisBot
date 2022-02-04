@@ -54,12 +54,16 @@ class BinanceAPI:
         params = {
             "symbol": "BTCUSDT",
         }
+        print("")
+        print("[INICIO FUNCION BUY DE BINANCEAPI]\n")
 
         response = self.send_signed_request("GET", "/fapi/v1/ticker/price", params)
         precio = float(response['price'])
+        print("Precio de compra: " + str(precio) + "\n")
 
         response = self.send_signed_request("GET", "/fapi/v2/balance")
         balance = float(response[1]['balance']) * porcentaje
+        print("Balance de la cuenta: " + str(balance) + "\n")
 
         cantidad_total = balance / precio * 5
         cantidad_total = round(cantidad_total, 3)
@@ -70,7 +74,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/leverage", params)
+        print("[Ajuste de apalancamiento]\n")
         print(response)
+        print("[Fin de ajuste de apalancamiento]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -78,7 +84,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/marginType", params)
+        print("[Ajuste de tipo de margin (Aislado o cruzado)]")
         print(response)
+        print("[Fin de ajuste de tipo de margin]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -89,7 +97,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de compra]")
         print(response)
+        print("[Fin de peticion de compra]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -101,7 +111,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Take Profit]")
         print(response)
+        print("[Fin de peticion de take profit]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -113,7 +125,12 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Stop Loss]")
         print(response)
+        print("[Fin de peticion de Stop Loss]")
+        print("[FIN FUNCION BUY DE BINANCEAPI]\n")
+        print("")
+
         return cantidad_total
 
     def buyV2(self, SL, TP, cantidad_total):
@@ -121,8 +138,12 @@ class BinanceAPI:
             "symbol": "BTCUSDT",
         }
 
+        print("")
+        print("[INICIO FUNCION BUYV2 DE BINANCEAPI]\n")
+
         response = self.send_signed_request("GET", "/fapi/v1/ticker/price", params)
         precio = float(response['price'])
+        print("Precio de compra: " + str(precio) + "\n")
 
         params = {
             "symbol": "BTCUSDT",
@@ -130,7 +151,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/leverage", params)
+        print("[Ajuste de apalancamiento]\n")
         print(response)
+        print("[Fin de ajuste de apalancamiento]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -138,7 +161,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/marginType", params)
+        print("[Ajuste de tipo de margin (Aislado o cruzado)]")
         print(response)
+        print("[Fin de ajuste de tipo de margin]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -149,7 +174,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de compra]")
         print(response)
+        print("[Fin de peticion de compra]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -161,7 +188,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Take Profit]")
         print(response)
+        print("[Fin de peticion de take profit]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -173,18 +202,27 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Stop Loss]")
         print(response)
+        print("[Fin de peticion de Stop Loss]")
+        print("[FIN FUNCION BUYV2 DE BINANCEAPI]\n")
+        print("")
 
     def sell(self, SL, TP, porcentaje=0.9):
         params = {
             "symbol": "BTCUSDT",
         }
 
+        print("")
+        print("[INICIO FUNCION SELL DE BINANCEAPI]\n")
+
         response = self.send_signed_request("GET", "/fapi/v1/ticker/price", params)
         precio = float(response['price'])
+        print("Precio de venta: " + str(precio) + "\n")
 
         response = self.send_signed_request("GET", "/fapi/v2/balance")
         balance = float(response[1]['balance']) * porcentaje
+        print("Balance de la cuenta: " + str(balance) + "\n")
 
         cantidad_total = balance / precio * 5
         cantidad_total = round(cantidad_total, 3)
@@ -195,7 +233,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/leverage", params)
+        print("[Ajuste de apalancamiento]\n")
         print(response)
+        print("[Fin de ajuste de apalancamiento]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -203,7 +243,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/marginType", params)
+        print("[Ajuste de tipo de margin (Aislado o cruzado)]")
         print(response)
+        print("[Fin de ajuste de tipo de margin]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -214,7 +256,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de venta]")
         print(response)
+        print("[Fin de peticion de venta]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -226,7 +270,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Take Profit]")
         print(response)
+        print("[Fin de peticion de take profit]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -238,7 +284,12 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Stop Loss]")
         print(response)
+        print("[Fin de peticion de Stop Loss]")
+        print("[FIN FUNCION SELL DE BINANCEAPI]\n")
+        print("")
+
         return cantidad_total
 
     def sellV2(self, SL, TP, cantidad_total):
@@ -246,8 +297,12 @@ class BinanceAPI:
             "symbol": "BTCUSDT",
         }
 
+        print("")
+        print("[INICIO FUNCION SELLV2 DE BINANCEAPI]\n")
+
         response = self.send_signed_request("GET", "/fapi/v1/ticker/price", params)
         precio = float(response['price'])
+        print("Precio de venta: " + str(precio) + "\n")
 
         params = {
             "symbol": "BTCUSDT",
@@ -255,7 +310,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/leverage", params)
+        print("[Ajuste de apalancamiento]\n")
         print(response)
+        print("[Fin de ajuste de apalancamiento]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -263,7 +320,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/marginType", params)
+        print("[Ajuste de tipo de margin (Aislado o cruzado)]")
         print(response)
+        print("[Fin de ajuste de tipo de margin]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -274,7 +333,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de venta]")
         print(response)
+        print("[Fin de peticion de venta]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -286,7 +347,9 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Take Profit]")
         print(response)
+        print("[Fin de peticion de take profit]")
 
         params = {
             "symbol": "BTCUSDT",
@@ -298,7 +361,11 @@ class BinanceAPI:
         }
 
         response = self.send_signed_request("POST", "/fapi/v1/order", params)
+        print("[Peticion de Stop Loss]")
         print(response)
+        print("[Fin de peticion de Stop Loss]")
+        print("[FIN FUNCION SELLV2 DE BINANCEAPI]\n")
+        print("")
 
     def get_PnL(self):
         params = {
@@ -352,12 +419,18 @@ class BinanceAPI:
             "symbol": "BTCUSDT",
         }
         response = self.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
+        print("")
+        print("[BORRAMOS LAS ORDENES QUE HAYAN ABIERTAS. ORDENES != POSICIONES]")
         print(response)
+        print("")
+
         if objetivo == 1:
             self.sellV2(150000, 2000, cantidad_a_vender)
         else:
             self.buyV2(2000, 150000, cantidad_a_vender)
 
         response = self.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
+        print("[BORRAMOS LAS ORDENES QUE HAYAN ABIERTAS. ORDENES != POSICIONES]")
         print(response)
+        print("")
 
