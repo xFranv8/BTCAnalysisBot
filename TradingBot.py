@@ -232,10 +232,10 @@ while True:
                 cantidad_orden_contraria = BinanceAPI.sell(stop_loss, take_profit)
                 type = "VENTA"
 
-            message = "Empezamos operación de " + type + "con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
+            message = "Empezamos operación de " + type + " con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
                       "Precio de apertura de la operación: " + str(open_price) + '\n' + \
                       "STOP LOSS: " + str(stop_loss) + '\n' + \
-                      "TAKE PROFIT: " + str(round(take_profit))
+                      "TAKE PROFIT: " + str(take_profit)
             print(message)
             TelegramBot.send_message(message)
             operamos = False
