@@ -189,6 +189,7 @@ saved_adx = False
 pruebas = False
 acumulado = [0]
 objetivo = -1
+imprimir = True
 
 while True:
     madrid = timezone('Europe/Madrid')
@@ -209,17 +210,20 @@ while True:
             saved_adx = True
         if lista_DMI[0] > 25.00 > lista_DMI[1] and objetivo != -1:
             operamos = True
-            print("")
-            print("[EMPEZAMOS OPERACION]\n")
-            print("Fecha: " + str(datetime.datetime.now(madrid)))
-            print("Objetivo: " + str(objetivo))
-            print("DI de la vela actual: " + str(lista_DMI[0]))
-            print("DI de la vela anterior: " + str(lista_DMI[1]))
-            print("[ESPERANDO AL FIN DEL CUARTO DE HORA PARA LANZAR LA ORDEN]")
-            print("")
 
-            message = "[EMPEZAMOS OPERACION] " + "\U000023F3"
-            TelegramBot.send_message(message)
+            if imprimir:
+                print("")
+                print("[EMPEZAMOS OPERACION]\n")
+                print("Fecha: " + str(datetime.datetime.now(madrid)))
+                print("Objetivo: " + str(objetivo))
+                print("DI de la vela actual: " + str(lista_DMI[0]))
+                print("DI de la vela anterior: " + str(lista_DMI[1]))
+                print("[ESPERANDO AL FIN DEL CUARTO DE HORA PARA LANZAR LA ORDEN]")
+                print("")
+
+                message = "[EMPEZAMOS OPERACION] " + "\U000023F3"
+                TelegramBot.send_message(message)
+                imprimir = False
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos and not BinanceAPI.existsOpenOrders():
@@ -277,3 +281,4 @@ while True:
 
         saved_adx = False
         medias_comprobadas = False
+        imprimir = True
