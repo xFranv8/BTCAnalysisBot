@@ -211,7 +211,7 @@ while True:
         if lista_DMI[0] > 25.00 > lista_DMI[1] and objetivo != -1:
             operamos = True
 
-            if imprimir and operamos:
+            if imprimir:
                 print("")
                 print("[EMPEZAMOS OPERACION]\n")
                 print("Fecha: " + str(datetime.datetime.now(madrid)))
