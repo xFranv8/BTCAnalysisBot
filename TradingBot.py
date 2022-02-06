@@ -22,7 +22,7 @@ def getDMI(objetivo):
 
     # Compruebo si existe algun problema al realizar la peticion.
     if r.status_code != 200:
-        return (False, -1)
+        return False, -1
     else:
         # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera sencilla
         values = json.dumps(values)
@@ -36,7 +36,7 @@ def getDMI(objetivo):
                 lista_dmis.append(float(v["minusdi"]))
             elif objetivo == 1:
                 lista_dmis.append(float(v["plusdi"]))
-        return (True, lista_dmis)
+        return True, lista_dmis
 
 
 def getMA50():
@@ -234,6 +234,7 @@ while True:
                 # Estamos en compras
                 for kline in last_klines[1]:
                     aux.append(kline[3])
+                aux = aux[:len(aux)-2]
                 stop_loss = float(calc_stop_loss_buys(aux))
                 take_profit = calc_take_profit(stop_loss, open_price)
 
@@ -251,6 +252,7 @@ while True:
                 # Estamos en ventas
                 for kline in last_klines[1]:
                     aux.append(kline[2])
+                aux = aux[:len(aux) - 2]
                 stop_loss = float(calc_stop_loss_sells(aux))
                 take_profit = calc_take_profit(stop_loss, open_price)
 
