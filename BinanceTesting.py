@@ -1,8 +1,7 @@
 import datetime, BinanceAPI, numpy as np
 from time import sleep
 
-import tensorflow as tf
-from matplotlib import pyplot as plt
+
 from pytz import timezone
 from pyfiglet import Figlet
 
