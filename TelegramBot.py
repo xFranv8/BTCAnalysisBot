@@ -3,8 +3,8 @@ import requests
 import schedule
 
 def send_message(message):
-    token = '5025769377:AAEfXFMGYSnjnvv5465awVjmDpHt2WGdf30'
-    chat_id = '-693670129'
+    token = '5061553178:AAGwlaui4Mlc6e7AXK9y-mvgSivQDB6aOFI'
+    chat_id = '462264128'
     send_text = 'https://api.telegram.org/bot' + token + '/sendMessage?chat_id=' + chat_id + '&parse_mode=Markdown&text=' + message
 
     response = requests.get(send_text)
@@ -35,3 +35,4 @@ def BTCFearAndGreedIndex():
 
 """mensaje = "Hola " + "\U000023F3"
 test_bot = send_message(mensaje)"""
+

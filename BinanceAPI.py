@@ -50,7 +50,7 @@ class BinanceAPI:
         response = self.dispatch_request(http_method)(**params)
         return response.json()
 
-    def buy(self, SL, TP, porcentaje=0.9):
+    def buy(self, SL, TP, porcentaje=1):
         params = {
             "symbol": "BTCUSDT",
         }
@@ -62,10 +62,13 @@ class BinanceAPI:
         print("Precio de compra: " + str(precio) + "\n")
 
         response = self.send_signed_request("GET", "/fapi/v2/balance")
-        balance = float(response[1]['balance']) * porcentaje
-        print("Balance de la cuenta: " + str(balance) + "\n")
+        usdt = 0
+        for r in response:
+            if r['asset'] == 'USDT':
+                usdt = float(r['balance'])
+        print("Balance de la cuenta: " + str(usdt) + "\n")
 
-        cantidad_total = balance / precio * 5
+        cantidad_total = (usdt / precio) * 5
         cantidad_total = round(cantidad_total, 3)
 
         params = {

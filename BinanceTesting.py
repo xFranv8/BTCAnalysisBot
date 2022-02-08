@@ -1,11 +1,10 @@
 import datetime, BinanceAPI, numpy as np
+import json
 from time import sleep
 
-
+import requests
 from pytz import timezone
 from pyfiglet import Figlet
-
-
 
 
 def banner():
@@ -14,7 +13,7 @@ def banner():
     print("Bot inicializado ....")
 
 
-banner()
+"""banner()
 operamos = False
 medias_comprobadas = False
 saved_adx = False
@@ -23,7 +22,8 @@ acumulado = [0]
 objetivo = -1
 
 BinanceAPI = BinanceAPI.BinanceAPI("b94b3f278f28a791d7764ea0bebb38f5a73dea4e4fec7eb6cf367103eafa0bcb",
-                                   "40916e9b070693fd166cbab6222c58d0290b65433ae1942aa151d44d953b258a")
+                                   "40916e9b070693fd166cbab6222c58d0290b65433ae1942aa151d44d953b258a")"""
+
 
 def calc_take_profit(SL, open_price):
     # open_price = get_klines(1)[1][1]
@@ -148,7 +148,6 @@ def cancelAllOrders():
     else:
         print("orden ya abierta")
         input()"""
-
 
 """def sell(SL, TP, porcentaje=0.9):
     params = {
@@ -296,7 +295,6 @@ cancelAllOrders()"""
 input()
 BinanceAPI.cancelAllOrders(cantidad, 0)"""
 
-
 """dmi_binance = np.array(
         [21.6499, 21.6349, 20.7740, 20.0176, 20.116, 17.9889, 17.2017, 16.1312, 15.4144, 15.0159, 18.1604, 18.6942,
          20.7908, 20.9799, 19.3777, 21.1631, 21.00, 19.9675, 21.3735, 21.17, 23.1167, 24.9497])
@@ -304,17 +302,83 @@ dmi_trading_view = np.array(
         [22.5, 22.7, 21.9, 21.0, 21.1, 18.8, 18.1, 17.0, 16.2, 15.8, 19.2, 19.6, 21.8, 21.9, 20.3, 22.4, 22.5, 21.4,
          23.1, 22.7, 25.2, 25.6], dtype=float)"""
 
+import math
+
+"""import numpy as np, pandas as pd
+from numpy.core.records import ndarray
+from pandas import DataFrame, Series
+
+
+def SSLChannels(dataframe, length=10, mode="sma"):
+    
+    Source: https://www.tradingview.com/script/xzIoaIJC-SSL-channel/
+    Author: xmatthias
+    Pinescript Author: ErwinBeckers
+    SSL Channels.
+    Average over highs and lows form a channel - lines "flip" when close crosses
+    either of the 2 lines.
+    Trading ideas:
+        * Channel cross
+        * as confirmation based on up > down for long
+    Usage:
+        dataframe['sslDown'], dataframe['sslUp'] = SSLChannels(dataframe, 10)
+    
+    if mode not in "sma":
+        raise ValueError(f"Mode {mode} not supported yet")
+
+    df = dataframe.copy()
+
+    if mode == "sma":
+        df["smaHigh"] = df["high"].rolling(length).mean()
+        df["smaLow"] = df["low"].rolling(length).mean()
+
+    df["hlv"] = np.where(
+        df["close"] > df["smaHigh"], 1, np.where(df["close"] < df["smaLow"], -1, np.NAN)
+    )
+    df["hlv"] = df["hlv"].ffill()
+
+    df["sslDown"] = np.where(df["hlv"] < 0, df["smaHigh"], df["smaLow"])
+    df["sslUp"] = np.where(df["hlv"] < 0, df["smaLow"], df["smaHigh"])
+
+    return df["sslDown"], df["sslUp"]
+
+
+BASE_URL = "https://api.binance.com"
+r = requests.get(BASE_URL + '/api/v3/klines?symbol=BTCUSDT&interval=15m')
+values = r.json()
+values = json.dumps(values)
+values = json.loads(values)
+values = values[490:]
+lows = []
+highs = []
+closes = []
+for v in values:
+    lows.append(float(v[3]))
+    highs.append(float(v[2]))
+    closes.append(float(v[4]))
+
+dic = {'low': lows, 'high': highs, 'close': closes}
+df = DataFrame.from_dict(dic)
+print(df['low'])
+
+down, high = SSLChannels(df, 10)
+print(down)
+print(high)"""
 
 
 
+KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
+SECRET = "ERUzkv08WettczvQX7bZAsGK2I7qVFw2p8yHO0cXwux9Qg2UJ2pVoLWMNi8n7CY2"
+BinanceAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
 
-
-
-
-
-
-
-
+response = BinanceAPI.send_signed_request("GET", "/fapi/v2/balance")
+usdt = 0
+for r in response:
+    if r['asset'] == 'USDT':
+        usdt = float(r['balance'])
+print(response)
+#balance = float(response[1]['balance']) * 0.9
+print("Balance de la cuenta: " + str(usdt) + "\n")
 
 
 
