@@ -236,7 +236,7 @@ while True:
                     aux.append(float(kline[3]))
 
                 aux = aux[:len(aux)-2]
-                stop_loss = float(calc_stop_loss_buys(aux)) + 2.0
+                stop_loss = float(calc_stop_loss_buys(aux)) - 2.0
                 take_profit = calc_take_profit(stop_loss, open_price)
 
                 print("")
@@ -271,15 +271,17 @@ while True:
             message = "Empezamos operación de " + type + " con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
                       "Precio de apertura de la operación: " + str(open_price) + '\n' + \
                       "STOP LOSS: " + str(stop_loss) + '\n' + \
-                      "TAKE PROFIT: " + str(take_profit)
+                      "TAKE PROFIT: " + str(round(take_profit, 2))
             TelegramBot.send_message(message)
             operamos = False
 
             # Tener en cuenta que probablemente haya que cerrar las operaciones manualmente desde la testnet con la
             # cuenta de daniel ya que no se cierran por defecto porque estamos cogiendo datos con otros precios
             while BinanceAPI.existsOpenOrders():
-                respuesta = result(stop_loss, take_profit, open_price, objetivo, [0])
-                BinanceAPI.cancelAllOrders(cantidad_orden_contraria, objetivo)
+                respuesta = result(stop_loss, take_profit, open_price, objetivo, acumulado)
+
+                # Instruccion para quitar ordenes en testnet.
+                #BinanceAPI.cancelAllOrders(cantidad_orden_contraria, objetivo)
             TelegramBot.send_message(respuesta)
 
         saved_adx = False

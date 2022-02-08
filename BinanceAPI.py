@@ -1,4 +1,4 @@
-import json, requests, hmac, hashlib, numpy as np, tensorflow as tf, matplotlib.pyplot as plt
+import json, requests, hmac, hashlib
 from urllib.parse import urlencode
 
 
@@ -18,7 +18,7 @@ class BinanceAPI:
         ).hexdigest()
 
     def get_timestamp(self):
-        servertime = requests.get(self.BASE_URL_TESTNET + "/fapi/v1/time")
+        servertime = requests.get(self.BASE_URL + "/fapi/v1/time")
         servertimeobject = json.loads(servertime.text)
         servertimeint = servertimeobject['serverTime']
         return servertimeint
@@ -43,7 +43,7 @@ class BinanceAPI:
             query_string = "timestamp={}".format(self.get_timestamp())
 
         url = (
-                self.BASE_URL_TESTNET + url_path + "?" + query_string + "&signature=" + self.hashing(query_string)
+                self.BASE_URL + url_path + "?" + query_string + "&signature=" + self.hashing(query_string)
         )
         print("{} {}".format(http_method, url))
         params = {"url": url, "params": {}}
