@@ -3,10 +3,8 @@ from pyfiglet import Figlet
 import requests, datetime, TelegramBot, BinanceAPI
 import json
 from pytz import timezone
-
 # Constante con el Token de la API para obtener el valor de los indicadores.
-TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" \
-                       ".eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM "
+TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ2MzB2YXpxdWV6QGdtYWlsLmNvbSIsImlhdCI6MTY0NDQ5OTk0NywiZXhwIjo3OTUxNjk5OTQ3fQ.m3q94ib6HuFON7k99LCeT76USGCeLvy0K8dnj8dSHwQ"
 testnet = "https://testnet.binancefuture.com"
 # Claves DanielMegaRabón para testear
 KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
