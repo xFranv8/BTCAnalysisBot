@@ -419,7 +419,7 @@ class BinanceAPI:
             values = json.loads(values)
             return True, values[500 - n:]
 
-    def cancelAllOrders(self, cantidad_a_vender, objetivo):
+    def cancelAllOrders_TESTNET(self, cantidad_a_vender, objetivo):
 
         params = {
             "symbol": "BTCUSDT",
@@ -440,3 +440,13 @@ class BinanceAPI:
         print(response)
         print("")
 
+    def cancelAllOrders(self, cantidad_a_vender, objetivo):
+
+        params = {
+            "symbol": "BTCUSDT",
+        }
+        response = self.send_signed_request("DELETE", "/fapi/v1/allOpenOrders", params)
+        print("")
+        print("[BORRAMOS LAS ORDENES QUE HAYAN ABIERTAS. ORDENES != POSICIONES]")
+        print(response)
+        print("")
