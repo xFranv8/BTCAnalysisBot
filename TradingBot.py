@@ -238,6 +238,7 @@ while True:
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos and not BinanceAPI.existsOpenOrders():
+            sleep(0.5)
             last_klines = BinanceAPI.get_klines(15)
             open_price = float(last_klines[1][14][4])
             aux = []
