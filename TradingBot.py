@@ -246,7 +246,7 @@ while True:
                 for kline in last_klines[1]:
                     aux.append(float(kline[3]))
 
-                aux = aux[:len(aux)-2]
+                aux = aux[:len(aux)-1]
                 stop_loss = float(calc_stop_loss_buys(aux)) - 2.0
                 take_profit = round(calc_take_profit(stop_loss, open_price), 2)
 
@@ -264,7 +264,7 @@ while True:
                 # Estamos en ventas
                 for kline in last_klines[1]:
                     aux.append(float(kline[2]))
-                aux = aux[:len(aux) - 2]
+                aux = aux[:len(aux) - 1]
                 stop_loss = float(calc_stop_loss_sells(aux)) + 2.0
                 take_profit = round(calc_take_profit(stop_loss, open_price), 2)
 
