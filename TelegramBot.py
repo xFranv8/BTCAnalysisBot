@@ -28,4 +28,3 @@ def BTCFearAndGreedIndex():
 
     return format_result
 
-
