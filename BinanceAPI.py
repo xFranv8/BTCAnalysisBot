@@ -50,7 +50,7 @@ class BinanceAPI:
         response = self.dispatch_request(http_method)(**params)
         return response.json()
 
-    def buy(self, SL, TP, porcentaje=0.9):
+    def buy(self, SL, TP, porcentaje=1):
         params = {
             "symbol": "BTCUSDT",
         }
@@ -69,7 +69,7 @@ class BinanceAPI:
         print("Balance de la cuenta: " + str(usdt) + "\n")
 
         cantidad_total = (usdt / precio) * 5
-        cantidad_total = round(cantidad_total*porcentaje, 3)
+        cantidad_total = round(cantidad_total, 3)
 
         params = {
             "symbol": "BTCUSDT",
@@ -224,14 +224,11 @@ class BinanceAPI:
         print("Precio de venta: " + str(precio) + "\n")
 
         response = self.send_signed_request("GET", "/fapi/v2/balance")
-        usdt = 0
-        for r in response:
-            if r['asset'] == 'USDT':
-                usdt = float(r['balance'])
-        print("Balance de la cuenta: " + str(usdt) + "\n")
+        balance = float(response[1]['balance']) * porcentaje
+        print("Balance de la cuenta: " + str(balance) + "\n")
 
-        cantidad_total = (usdt / precio) * 5
-        cantidad_total = round(cantidad_total * porcentaje, 3)
+        cantidad_total = balance / precio * 5
+        cantidad_total = round(cantidad_total, 3)
 
         params = {
             "symbol": "BTCUSDT",
@@ -450,3 +447,9 @@ class BinanceAPI:
         print("[BORRAMOS LAS ORDENES QUE HAYAN ABIERTAS. ORDENES != POSICIONES]")
         print(response)
         print("")
+
+    def get_ticker_price(self):
+        r = requests.get(self.BASE_URL + "/fapi/v1/ticker/price?symbol=BTCUSDT")
+        r = json.loads(r.text)
+        return float(r['price'])
+

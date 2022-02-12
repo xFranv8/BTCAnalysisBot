@@ -3,10 +3,8 @@ from pyfiglet import Figlet
 import requests, datetime, TelegramBot, BinanceAPI
 import json
 from pytz import timezone
-
 # Constante con el Token de la API para obtener el valor de los indicadores.
-TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" \
-                       ".eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0.GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM "
+TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ2MzB2YXpxdWV6QGdtYWlsLmNvbSIsImlhdCI6MTY0NDQ5OTk0NywiZXhwIjo3OTUxNjk5OTQ3fQ.m3q94ib6HuFON7k99LCeT76USGCeLvy0K8dnj8dSHwQ"
 testnet = "https://testnet.binancefuture.com"
 # Claves DanielMegaRabón para testear
 KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
@@ -240,6 +238,7 @@ while True:
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos and not BinanceAPI.existsOpenOrders():
+            sleep(0.5)
             last_klines = BinanceAPI.get_klines(15)
             open_price = float(last_klines[1][14][4])
             aux = []
@@ -248,7 +247,7 @@ while True:
                 for kline in last_klines[1]:
                     aux.append(float(kline[3]))
 
-                aux = aux[:len(aux)-2]
+                aux = aux[:len(aux)-1]
                 stop_loss = float(calc_stop_loss_buys(aux)) - 2.0
                 take_profit = round(calc_take_profit(stop_loss, open_price), 2)
 
@@ -266,7 +265,7 @@ while True:
                 # Estamos en ventas
                 for kline in last_klines[1]:
                     aux.append(float(kline[2]))
-                aux = aux[:len(aux) - 2]
+                aux = aux[:len(aux) - 1]
                 stop_loss = float(calc_stop_loss_sells(aux)) + 2.0
                 take_profit = round(calc_take_profit(stop_loss, open_price), 2)
 
