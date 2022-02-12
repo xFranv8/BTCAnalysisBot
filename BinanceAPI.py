@@ -448,4 +448,8 @@ class BinanceAPI:
         print(response)
         print("")
 
+    def get_ticker_price(self):
+        r = requests.get(self.BASE_URL + "/fapi/v1/ticker/price?symbol=BTCUSDT")
+        r = json.loads(r.text)
+        return float(r['price'])
 
