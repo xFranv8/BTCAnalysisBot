@@ -27,5 +27,3 @@ def BTCFearAndGreedIndex():
     format_result = result.text
 
     return format_result
-
-print("")
