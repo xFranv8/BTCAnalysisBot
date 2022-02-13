@@ -205,7 +205,7 @@ imprimir = True
 while True:
     madrid = timezone('Europe/Madrid')
     minutos = datetime.datetime.now(madrid).minute
-
+    last_klines = None
     # Comprobamos la posicion de las dos medias a las horas correspondientes.
     if (minutos == 13) or (minutos == 28) or (minutos == 43) or (minutos == 58):
         # -1 Medias Iguales, no hacemos nada
@@ -221,7 +221,7 @@ while True:
             saved_adx = True
         if lista_DMI[0] > 25.00 > lista_DMI[1] and objetivo != -1:
             operamos = True
-
+            last_klines = BinanceAPI.get_klines(15)
             if imprimir:
                 print("")
                 print("[EMPEZAMOS OPERACION]\n")
@@ -238,8 +238,6 @@ while True:
 
     if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
         if operamos and not BinanceAPI.existsOpenOrders():
-            sleep(0.5)
-            last_klines = BinanceAPI.get_klines(15)
             open_price = float(last_klines[1][14][4])
             aux = []
             if objetivo == 1:
