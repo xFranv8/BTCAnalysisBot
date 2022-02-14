@@ -4,7 +4,6 @@ import json
 from pandas import DataFrame
 from pytz import timezone
 from time import sleep
-from pyfiglet import Figlet
 
 PATH = "data.json"
 
@@ -86,19 +85,16 @@ while True:
     minutos = datetime.datetime.now(madrid).minute
 
     if minutos % 5 == 0:
-        if not aux:
-            (red, green) = SSLChannels()
-            data = {
-                'red': red,
-                'green': green
-            }
-            print("Writing values to file")
-            append_to_json(data, PATH)
-            with open(PATH, 'r+') as f:
-                values = json.load(f)
-            if len(values) == 3:
-                delete_json(values)
-                print(values[len(values) - 1])
-            aux = True
-    else:
-        aux = False
+        sleep(5)
+        (red, green) = SSLChannels()
+        data = {
+            'red': red,
+            'green': green
+        }
+        print("Writing values to file")
+        append_to_json(data, PATH)
+        with open(PATH, 'r+') as f:
+            values = json.load(f)
+        if len(values) == 3:
+            delete_json(values)
+            print(values[len(values) - 1])
