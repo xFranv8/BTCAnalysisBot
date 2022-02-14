@@ -9,7 +9,7 @@ TOKEN_API = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ2MzB2YXpxdWV6QG
 KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
 SECRET = "ERUzkv08WettczvQX7bZAsGK2I7qVFw2p8yHO0cXwux9Qg2UJ2pVoLWMNi8n7CY2"
 BINANCEAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
-
+COMPROBACION = False
 
 def SSLChannels(length=10, mode="sma"):
     """ Source: https://www.tradingview.com/script/xzIoaIJC-SSL-channel/
@@ -89,38 +89,42 @@ def compare_ema():
 
 
 def strategy():
-    exit = False
+    global COMPROBACION
     madrid = timezone('Europe/Madrid')
     minutos = datetime.datetime.now(madrid).minute
     objetivo = None
     if minutos % 5 == 3:
         objetivo = compare_ema()
+        COMPROBACION = False
         return False, 0, objetivo
     elif minutos % 5 == 4:
-        sleep(40)
-        with open("SSLData/data.json", 'r') as f:
-            values = json.load(f)
-            length = len(values)
-            ssl_vela_formandose = values[length - 1]
-            ssl_vela_anterior = values[length - 2]
-        print("SSL vela formandose: ", ssl_vela_formandose["green"], " - VERDE, ", ssl_vela_formandose["red"], " - ROJO\n")
-        print("SSL vela anterior:  ", ssl_vela_anterior["green"], "  - VERDE, ", ssl_vela_anterior["red"], "- ROJO\n")
-        if objetivo == 1:
-            if ssl_vela_anterior["green"] < ssl_vela_anterior["red"] and ssl_vela_formandose["green"] > ssl_vela_formandose["red"]:
-                print("ALERTA EN COMPRAS")
-                return True, ssl_vela_formandose["red"] - 2, 1
+        if not COMPROBACION:
+            sleep(40)
+            COMPROBACION = True
+            with open("SSLData/data.json", 'r') as f:
+                values = json.load(f)
+                length = len(values)
+                ssl_vela_formandose = values[length - 1]
+                ssl_vela_anterior = values[length - 2]
+            print("SSL vela formandose: ", ssl_vela_formandose["green"], " - VERDE, ", ssl_vela_formandose["red"], " - ROJO\n")
+            print("SSL vela anterior:  ", ssl_vela_anterior["green"], "  - VERDE, ", ssl_vela_anterior["red"], "- ROJO\n")
+            if objetivo == 1:
+                if ssl_vela_anterior["green"] < ssl_vela_anterior["red"] and ssl_vela_formandose["green"] > ssl_vela_formandose["red"]:
+                    print("ALERTA EN COMPRAS")
+                    return True, ssl_vela_formandose["red"] - 2, 1
+                else:
+                    print("NO HAY CRUCE EN COMPRAS")
+                    return False, 0, objetivo
+            elif objetivo == 0:
+                if ssl_vela_anterior["red"] < ssl_vela_anterior["green"] and ssl_vela_formandose["red"] > ssl_vela_formandose["green"]:
+                    print("ALERTA EN VENTAS")
+                    return True, ssl_vela_formandose["red"] + 2, 0
+                else:
+                    print("NO HAY CRUCE EN VENTAS")
+                    return False, 0, objetivo
             else:
-                print("NO HAY CRUCE EN COMPRAS")
-                return False, 0, objetivo
-        elif objetivo == 0:
-            if ssl_vela_anterior["red"] < ssl_vela_anterior["green"] and ssl_vela_formandose["red"] > ssl_vela_formandose["green"]:
-                print("ALERTA EN VENTAS")
-                return True, ssl_vela_formandose["red"] + 2, 0
-            else:
-                print("NO HAY CRUCE EN VENTAS")
-                return False, 0, objetivo
-        else:
-            return False, 0, -1
+                return False, 0, -1
+
     else:
         return False, 0, -1
 
