@@ -1,5 +1,5 @@
 import numpy as np
-import requests, datetime, TelegramBot, BinanceAPI
+import requests, datetime
 import json
 from pandas import DataFrame
 from pytz import timezone
@@ -84,17 +84,21 @@ while True:
     madrid = timezone('Europe/Madrid')
     minutos = datetime.datetime.now(madrid).minute
 
-    if minutos % 5 == 0:
-        sleep(5)
-        (red, green) = SSLChannels()
-        data = {
-            'red': red,
-            'green': green
-        }
-        print("Writing values to file")
-        append_to_json(data, PATH)
-        with open(PATH, 'r+') as f:
-            values = json.load(f)
-        if len(values) == 3:
-            delete_json(values)
-            print(values[len(values) - 1])
+    if minutos % 4 == 0:
+        if not aux:
+            sleep(55)
+            aux = True
+            (red, green) = SSLChannels()
+            data = {
+                'red': red,
+                'green': green
+            }
+            print("Writing values to file")
+            append_to_json(data, PATH)
+            with open(PATH, 'r+') as f:
+                values = json.load(f)
+            if len(values) == 3:
+                delete_json(values)
+                print(values[len(values) - 1])
+    else:
+        aux = False

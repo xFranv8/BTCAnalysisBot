@@ -1,6 +1,7 @@
 from time import sleep
 from pyfiglet import Figlet
-import requests, datetime, TelegramBot, BinanceAPI
+import requests, datetime, BinanceAPI
+from TelegramBots import TelegramBot
 import json
 from pytz import timezone
 # Constante con el Token de la API para obtener el valor de los indicadores.
@@ -10,7 +11,7 @@ testnet = "https://testnet.binancefuture.com"
 KEY = "GCafqvvjkZZwSvHDlzjnHvfSryxAE04OxRF0L0hogk1B3OtHRffCUqe9CtQEnNM5"
 SECRET = "q9mZR1SkuNnlC6EGK9fHtU0XOrI2dlsVnRcnyYE9A3MPdL8hXV5nj217oX4rPQ5x"
 BinanceAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
-
+madrid = timezone('Europe/Madrid')
 
 def getDMI(objetivo):
     # Peticion GET al endpoint de la API que devuelve los valores de los indicadores. Seria muy interesante obtener
