@@ -4,11 +4,11 @@ import requests, datetime, TelegramBot, BinanceAPI
 import json
 from pytz import timezone
 # Constante con el Token de la API para obtener el valor de los indicadores.
-TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ2MzB2YXpxdWV6QGdtYWlsLmNvbSIsImlhdCI6MTY0NDQ5OTk0NywiZXhwIjo3OTUxNjk5OTQ3fQ.m3q94ib6HuFON7k99LCeT76USGCeLvy0K8dnj8dSHwQ"
+TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRhbmllbGNvZG13QGdtYWlsLmNvbSIsImlhdCI6MTY0NDUwMjgwMiwiZXhwIjo3OTUxNzAyODAyfQ.4qSyhe209FbKNbA2atuc_DJ2DTWGwx9pQ6xv6A9H4-8"
 testnet = "https://testnet.binancefuture.com"
 # Claves DanielMegaRabón para testear
-KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
-SECRET = "ERUzkv08WettczvQX7bZAsGK2I7qVFw2p8yHO0cXwux9Qg2UJ2pVoLWMNi8n7CY2"
+KEY = "GCafqvvjkZZwSvHDlzjnHvfSryxAE04OxRF0L0hogk1B3OtHRffCUqe9CtQEnNM5"
+SECRET = "q9mZR1SkuNnlC6EGK9fHtU0XOrI2dlsVnRcnyYE9A3MPdL8hXV5nj217oX4rPQ5x"
 BinanceAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
 
 
@@ -201,11 +201,11 @@ pruebas = False
 acumulado = [0]
 objetivo = -1
 imprimir = True
+last_klines = None
 
 while True:
     madrid = timezone('Europe/Madrid')
     minutos = datetime.datetime.now(madrid).minute
-    last_klines = None
     # Comprobamos la posicion de las dos medias a las horas correspondientes.
     if (minutos == 13) or (minutos == 28) or (minutos == 43) or (minutos == 58):
         # -1 Medias Iguales, no hacemos nada
