@@ -142,7 +142,7 @@ def stop_position(open_price, SL, objetivo, ):
     porcentaje_SL = 100 - ((SL * 100) / open_price)
     exit = False
     sleep(30)
-    last_line = BINANCEAPI.get_klines(1)
+    last_line = BINANCEAPI.get_klines5min(1)
 
     with open("SSLData/data.json", 'r') as f:
         values = json.load(f)
