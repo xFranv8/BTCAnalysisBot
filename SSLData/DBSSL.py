@@ -24,11 +24,11 @@ def SSLChannels(length=10, mode="sma"):
      Usage:
          dataframe['sslDown'], dataframe['sslUp'] = SSLChannels(dataframe, 10)
      """
-    values = BINANCEAPI.get_klines(10)
+    values = BINANCEAPI.get_klines5min(10)
     lows = []
     highs = []
     closes = []
-    for v in values:
+    for v in values[1]:
         lows.append(float(v[3]))
         highs.append(float(v[2]))
         closes.append(float(v[4]))
