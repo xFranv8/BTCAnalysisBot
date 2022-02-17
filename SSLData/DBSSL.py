@@ -4,9 +4,12 @@ import json
 from pandas import DataFrame
 from pytz import timezone
 from time import sleep
+import BinanceAPI
 
 PATH = "data.json"
-
+KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
+SECRET = "ERUzkv08WettczvQX7bZAsGK2I7qVFw2p8yHO0cXwux9Qg2UJ2pVoLWMNi8n7CY2"
+BINANCEAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
 
 def SSLChannels(length=10, mode="sma"):
     """ Source: https://www.tradingview.com/script/xzIoaIJC-SSL-channel/
@@ -21,13 +24,7 @@ def SSLChannels(length=10, mode="sma"):
      Usage:
          dataframe['sslDown'], dataframe['sslUp'] = SSLChannels(dataframe, 10)
      """
-
-    BASE_URL = "https://api.binance.com"
-    r = requests.get(BASE_URL + '/api/v3/klines?symbol=BTCUSDT&interval=5m')
-    values = r.json()
-    values = json.dumps(values)
-    values = json.loads(values)
-    values = values[490:]
+    values = BINANCEAPI.get_klines(10)
     lows = []
     highs = []
     closes = []
