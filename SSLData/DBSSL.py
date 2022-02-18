@@ -1,12 +1,15 @@
 import numpy as np
-import requests, datetime, TelegramBot, BinanceAPI
+import requests, datetime
 import json
 from pandas import DataFrame
 from pytz import timezone
 from time import sleep
+import BinanceAPI
 
 PATH = "data.json"
-
+KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
+SECRET = "ERUzkv08WettczvQX7bZAsGK2I7qVFw2p8yHO0cXwux9Qg2UJ2pVoLWMNi8n7CY2"
+BINANCEAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
 
 def SSLChannels(length=10, mode="sma"):
     """ Source: https://www.tradingview.com/script/xzIoaIJC-SSL-channel/
@@ -21,17 +24,11 @@ def SSLChannels(length=10, mode="sma"):
      Usage:
          dataframe['sslDown'], dataframe['sslUp'] = SSLChannels(dataframe, 10)
      """
-
-    BASE_URL = "https://api.binance.com"
-    r = requests.get(BASE_URL + '/api/v3/klines?symbol=BTCUSDT&interval=5m')
-    values = r.json()
-    values = json.dumps(values)
-    values = json.loads(values)
-    values = values[490:]
+    values = BINANCEAPI.get_klines5min(10)
     lows = []
     highs = []
     closes = []
-    for v in values:
+    for v in values[1]:
         lows.append(float(v[3]))
         highs.append(float(v[2]))
         closes.append(float(v[4]))
@@ -84,17 +81,21 @@ while True:
     madrid = timezone('Europe/Madrid')
     minutos = datetime.datetime.now(madrid).minute
 
-    if minutos % 5 == 0:
-        sleep(5)
-        (red, green) = SSLChannels()
-        data = {
-            'red': red,
-            'green': green
-        }
-        print("Writing values to file")
-        append_to_json(data, PATH)
-        with open(PATH, 'r+') as f:
-            values = json.load(f)
-        if len(values) == 3:
-            delete_json(values)
-            print(values[len(values) - 1])
+    if minutos % 4 == 0:
+        if not aux:
+            sleep(55)
+            aux = True
+            (red, green) = SSLChannels()
+            data = {
+                'red': red,
+                'green': green
+            }
+            print("Writing values to file")
+            append_to_json(data, PATH)
+            with open(PATH, 'r+') as f:
+                values = json.load(f)
+            if len(values) == 3:
+                delete_json(values)
+                print(values[len(values) - 1])
+    else:
+        aux = False

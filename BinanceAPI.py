@@ -416,6 +416,22 @@ class BinanceAPI:
             values = json.loads(values)
             return True, values[500 - n:]
 
+    def get_klines5min(self, n):
+        # GET a https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m
+        r = requests.get(self.BASE_URL + '/fapi/v1/klines?symbol=BTCUSDT&interval=5m')
+        values = r.json()
+
+        # Compruebo si existe algun problema al realizar la peticion.
+        if r.status_code != 200:
+            return False, -1
+        else:
+            # Convierto la variable que posee los valores en JSON para que puedan ser utilizados con python de manera
+            # sencilla
+            values = json.dumps(values)
+            values = json.loads(values)
+            return True, values[500 - n:]
+
+
     def cancelAllOrders_TESTNET(self, cantidad_a_vender, objetivo):
 
         params = {
