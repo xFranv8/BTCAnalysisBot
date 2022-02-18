@@ -204,96 +204,101 @@ imprimir = True
 last_klines = None
 
 while True:
-    madrid = timezone('Europe/Madrid')
-    minutos = datetime.datetime.now(madrid).minute
-    # Comprobamos la posicion de las dos medias a las horas correspondientes.
-    if (minutos == 13) or (minutos == 28) or (minutos == 43) or (minutos == 58):
-        # -1 Medias Iguales, no hacemos nada
-        # 0 Buscamos ventas
-        # 1 Buscamos compras.
-        if not medias_comprobadas:
-            objetivo = compararMedias()
-            medias_comprobadas = True
+    try:
+        madrid = timezone('Europe/Madrid')
+        minutos = datetime.datetime.now(madrid).minute
+        # Comprobamos la posicion de las dos medias a las horas correspondientes.
+        if (minutos == 13) or (minutos == 28) or (minutos == 43) or (minutos == 58):
+            # -1 Medias Iguales, no hacemos nada
+            # 0 Buscamos ventas
+            # 1 Buscamos compras.
+            if not medias_comprobadas:
+                objetivo = compararMedias()
+                medias_comprobadas = True
 
-    if (minutos == 14) or (minutos == 29) or (minutos == 44) or (minutos == 59) and objetivo != -1:
-        if not saved_adx:
-            lista_DMI = getDMI(objetivo)[1]
-            saved_adx = True
-        if lista_DMI[0] > 25.00 > lista_DMI[1] and objetivo != -1:
-            operamos = True
-            last_klines = BinanceAPI.get_klines(15)
-            if imprimir:
-                print("")
-                print("[EMPEZAMOS OPERACION]\n")
-                print("Fecha: " + str(datetime.datetime.now(madrid)))
-                print("Objetivo: " + str(objetivo))
-                print("DI de la vela actual: " + str(lista_DMI[0]))
-                print("DI de la vela anterior: " + str(lista_DMI[1]))
-                print("[ESPERANDO AL FIN DEL CUARTO DE HORA PARA LANZAR LA ORDEN]")
-                print("")
+        if (minutos == 14) or (minutos == 29) or (minutos == 44) or (minutos == 59) and objetivo != -1:
+            if not saved_adx:
+                lista_DMI = getDMI(objetivo)[1]
+                saved_adx = True
+            if lista_DMI[0] > 25.00 > lista_DMI[1] and objetivo != -1:
+                operamos = True
+                last_klines = BinanceAPI.get_klines(15)
+                if imprimir:
+                    print("")
+                    print("[EMPEZAMOS OPERACION]\n")
+                    print("Fecha: " + str(datetime.datetime.now(madrid)))
+                    print("Objetivo: " + str(objetivo))
+                    print("DI de la vela actual: " + str(lista_DMI[0]))
+                    print("DI de la vela anterior: " + str(lista_DMI[1]))
+                    print("[ESPERANDO AL FIN DEL CUARTO DE HORA PARA LANZAR LA ORDEN]")
+                    print("")
 
-                message = "[EMPEZAMOS OPERACION] " + "\U000023F3"
+                    message = "[EMPEZAMOS OPERACION] " + "\U000023F3"
+                    TelegramBot.send_message(message)
+                    imprimir = False
+
+        if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
+            if operamos and not BinanceAPI.existsOpenOrders():
+                open_price = float(last_klines[1][14][4])
+                aux = []
+                if objetivo == 1:
+                    # Estamos en compras
+                    for kline in last_klines[1]:
+                        aux.append(float(kline[3]))
+
+                    aux = aux[:len(aux)-1]
+                    stop_loss = float(calc_stop_loss_buys(aux)) - 2.0
+                    take_profit = round(calc_take_profit(stop_loss, open_price), 2)
+
+                    print("")
+                    print("[DATOS DE LA ORDEN DE COMPRA]")
+                    print("Fecha: " + str(datetime.datetime.now(madrid)))
+                    print("Precio de apertura: " + str(open_price))
+                    print("Stop Loss: " + str(stop_loss))
+                    print("Take Profit: " + str(take_profit))
+                    print("")
+
+                    cantidad_orden_contraria = BinanceAPI.buy(stop_loss, take_profit)
+                    type = "COMPRA"
+                else:
+                    # Estamos en ventas
+                    for kline in last_klines[1]:
+                        aux.append(float(kline[2]))
+                    aux = aux[:len(aux) - 1]
+                    stop_loss = float(calc_stop_loss_sells(aux)) + 2.0
+                    take_profit = round(calc_take_profit(stop_loss, open_price), 2)
+
+                    print("")
+                    print("[DATOS DE LA ORDEN DE VENTA]")
+                    print("Fecha: " + str(datetime.datetime.now(madrid)))
+                    print("Precio de apertura: " + str(open_price))
+                    print("Stop Loss: " + str(stop_loss))
+                    print("Take Profit: " + str(take_profit))
+                    print("")
+
+                    cantidad_orden_contraria = BinanceAPI.sell(stop_loss, take_profit)
+                    type = "VENTA"
+
+                message = "Empezamos operación de " + type + " con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
+                          "Precio de apertura de la operación: " + str(open_price) + '\n' + \
+                          "STOP LOSS: " + str(stop_loss) + '\n' + \
+                          "TAKE PROFIT: " + str(take_profit)
                 TelegramBot.send_message(message)
-                imprimir = False
+                operamos = False
 
-    if (minutos == 15) or (minutos == 30) or (minutos == 45) or (minutos == 00):
-        if operamos and not BinanceAPI.existsOpenOrders():
-            open_price = float(last_klines[1][14][4])
-            aux = []
-            if objetivo == 1:
-                # Estamos en compras
-                for kline in last_klines[1]:
-                    aux.append(float(kline[3]))
+                # Tener en cuenta que probablemente haya que cerrar las operaciones manualmente desde la testnet con la
+                # cuenta de daniel ya que no se cierran por defecto porque estamos cogiendo datos con otros precios
+                while BinanceAPI.existsOpenOrders():
+                    respuesta = result(stop_loss, take_profit, open_price, objetivo, acumulado)
 
-                aux = aux[:len(aux)-1]
-                stop_loss = float(calc_stop_loss_buys(aux)) - 2.0
-                take_profit = round(calc_take_profit(stop_loss, open_price), 2)
+                    # Cancelamos la orden que falta. (ORDEN != POSICION)
+                    BinanceAPI.cancelAllOrders(cantidad_orden_contraria, objetivo)
+                TelegramBot.send_message(respuesta)
 
-                print("")
-                print("[DATOS DE LA ORDEN DE COMPRA]")
-                print("Fecha: " + str(datetime.datetime.now(madrid)))
-                print("Precio de apertura: " + str(open_price))
-                print("Stop Loss: " + str(stop_loss))
-                print("Take Profit: " + str(take_profit))
-                print("")
-
-                cantidad_orden_contraria = BinanceAPI.buy(stop_loss, take_profit)
-                type = "COMPRA"
-            else:
-                # Estamos en ventas
-                for kline in last_klines[1]:
-                    aux.append(float(kline[2]))
-                aux = aux[:len(aux) - 1]
-                stop_loss = float(calc_stop_loss_sells(aux)) + 2.0
-                take_profit = round(calc_take_profit(stop_loss, open_price), 2)
-
-                print("")
-                print("[DATOS DE LA ORDEN DE VENTA]")
-                print("Fecha: " + str(datetime.datetime.now(madrid)))
-                print("Precio de apertura: " + str(open_price))
-                print("Stop Loss: " + str(stop_loss))
-                print("Take Profit: " + str(take_profit))
-                print("")
-
-                cantidad_orden_contraria = BinanceAPI.sell(stop_loss, take_profit)
-                type = "VENTA"
-
-            message = "Empezamos operación de " + type + " con fecha: " + str(datetime.datetime.now(madrid)) + '\n' + \
-                      "Precio de apertura de la operación: " + str(open_price) + '\n' + \
-                      "STOP LOSS: " + str(stop_loss) + '\n' + \
-                      "TAKE PROFIT: " + str(take_profit)
-            TelegramBot.send_message(message)
-            operamos = False
-
-            # Tener en cuenta que probablemente haya que cerrar las operaciones manualmente desde la testnet con la
-            # cuenta de daniel ya que no se cierran por defecto porque estamos cogiendo datos con otros precios
-            while BinanceAPI.existsOpenOrders():
-                respuesta = result(stop_loss, take_profit, open_price, objetivo, acumulado)
-
-                # Cancelamos la orden que falta. (ORDEN != POSICION)
-                BinanceAPI.cancelAllOrders(cantidad_orden_contraria, objetivo)
-            TelegramBot.send_message(respuesta)
-
-        saved_adx = False
-        medias_comprobadas = False
-        imprimir = True
+            saved_adx = False
+            medias_comprobadas = False
+            imprimir = True
+    except:
+        message = "[" + "\U00002620" + "ERROR FATAL" + "\U00002620" + "] Mirar logs."
+        TelegramBot.send_message(message)
+        exit(1)
