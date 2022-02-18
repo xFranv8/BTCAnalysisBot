@@ -298,7 +298,11 @@ while True:
             saved_adx = False
             medias_comprobadas = False
             imprimir = True
-    except:
+    except Exception as e:
+        print("[ERROR DE EJECUCION]\n")
+        print(e)
+        print("[FIN DE ERROR DE EJECUCION]\n")
         message = "[" + "\U00002620" + "ERROR FATAL" + "\U00002620" + "] Mirar logs."
         TelegramBot.send_message(message)
         exit(1)
+
