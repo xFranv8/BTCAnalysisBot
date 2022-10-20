@@ -7,8 +7,8 @@ from time import sleep
 import BinanceAPI
 
 PATH = "data.json"
-KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
-SECRET = "ERUzkv08WettczvQX7bZAsGK2I7qVFw2p8yHO0cXwux9Qg2UJ2pVoLWMNi8n7CY2"
+KEY = ""
+SECRET = ""
 BINANCEAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
 
 def SSLChannels(length=10, mode="sma"):
