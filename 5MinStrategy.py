@@ -6,9 +6,9 @@ from pytz import timezone
 from time import sleep
 from TelegramBots import GamblingBot
 
-TOKEN_API = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ2MzB2YXpxdWV6QGdtYWlsLmNvbSIsImlhdCI6MTY0NDQ5OTk0NywiZXhwIjo3OTUxNjk5OTQ3fQ.m3q94ib6HuFON7k99LCeT76USGCeLvy0K8dnj8dSHwQ"
-KEY = "9DMJuBctsl3xptp0BLZWFsgnkH9BGFsuJzgXknPRbc2Xj2ukNfYe34iaXYmrlT0H"
-SECRET = "ERUzkv08WettczvQX7bZAsGK2I7qVFw2p8yHO0cXwux9Qg2UJ2pVoLWMNi8n7CY2"
+TOKEN_API = ""
+KEY = ""
+SECRET = ""
 BINANCEAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
 COMPROBACION = False
 OBJETIVO = -1
