@@ -5,18 +5,18 @@ from TelegramBots import TelegramBot
 import json
 from pytz import timezone
 # Constante con el Token de la API para obtener el valor de los indicadores.
-TOKEN_API_INDICATORS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRhbmllbGNvZG13QGdtYWlsLmNvbSIsImlhdCI6MTY0NDUwMjgwMiwiZXhwIjo3OTUxNzAyODAyfQ.4qSyhe209FbKNbA2atuc_DJ2DTWGwx9pQ6xv6A9H4-8"
+TOKEN_API_INDICATORS = ""
 testnet = "https://testnet.binancefuture.com"
-# Claves DanielMegaRabón para testear
-KEY = "GCafqvvjkZZwSvHDlzjnHvfSryxAE04OxRF0L0hogk1B3OtHRffCUqe9CtQEnNM5"
-SECRET = "q9mZR1SkuNnlC6EGK9fHtU0XOrI2dlsVnRcnyYE9A3MPdL8hXV5nj217oX4rPQ5x"
+# Claves Daniel para testear
+KEY = ""
+SECRET = ""
 BinanceAPI = BinanceAPI.BinanceAPI(KEY, SECRET)
 madrid = timezone('Europe/Madrid')
 
 def getDMI(objetivo):
     # Peticion GET al endpoint de la API que devuelve los valores de los indicadores. Seria muy interesante obtener
     # el ADX y el resto de valores de Binance Futuros USDM.
-    # https://api.taapi.io/dmi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+    # https://api.taapi.io/dmi?secret=
     # .eyJlbWFpbCI6InJvYWR0bzFtaWxsaW9uMjAyNkBnbWFpbC5jb20iLCJpYXQiOjE2NDMxMTE4NTgsImV4cCI6Nzk1MDMxMTg1OH0
     # .GmJoKq_wyWfAhkfBA0jJp7kCELHCZVfycDYvexbRytM&exchange=binanceusdm&symbol=BTC/USDT&interval=15m
     r = requests.get(
